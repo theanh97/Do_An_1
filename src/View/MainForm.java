@@ -7,23 +7,38 @@ package View;
 
 import Algorithm.DataOfTwoPointForOneStep;
 import Algorithm.Dijkstra;
+import Draw.DrawArrow;
+import Draw.DrawPoint;
 import Model.MaTran;
 import Model.MaTran.Mode;
+import Model.Point;
 import Presenter.MainFormPresenter;
 import Utils.Constants;
 import Utils.MaTranUtils;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.CompareGenerator;
+import com.sun.xml.internal.ws.wsdl.parser.InaccessibleWSDLException;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
+import javafx.util.Pair;
 import javax.swing.ButtonModel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-
+import Draw.DrawPoint; 
 /**
  *
  * @author DELL
@@ -49,6 +64,13 @@ public class MainForm extends javax.swing.JFrame
         setEventListener();
         initData();
         prepareUI();
+        
+        DrawArrow line = new DrawArrow(50,50,200,200);
+        panelPhacHoaDoThi.add(line); 
+        panelPhacHoaDoThi.repaint();
+        panelPhacHoaDoThi.setVisible(true);
+        getContentPane().repaint();
+        repaint();
     }
 
     /**
@@ -250,6 +272,8 @@ public class MainForm extends javax.swing.JFrame
         ));
         jScrollPane3.setViewportView(tblMaTran);
 
+        panelPhacHoaDoThi.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
         javax.swing.GroupLayout panelPhacHoaDoThiLayout = new javax.swing.GroupLayout(panelPhacHoaDoThi);
         panelPhacHoaDoThi.setLayout(panelPhacHoaDoThiLayout);
         panelPhacHoaDoThiLayout.setHorizontalGroup(
@@ -388,6 +412,7 @@ public class MainForm extends javax.swing.JFrame
         cmbDoThiCoSan.removeAllItems();
         cmbDoThiCoSan.addItem("Đồ thị 1");
         cmbDoThiCoSan.addItem("Đồ thị 2");
+        cmbDoThiCoSan.addItem("Đồ thị 3");
 
         // combobox Point ( Start - End ) 
         cmbDiemXuatPhat.removeAllItems();
@@ -417,6 +442,7 @@ public class MainForm extends javax.swing.JFrame
         mListDoThiCoSan = new ArrayList<Object[][]>();
         mListDoThiCoSan.add(Constants.DO_THI_1);
         mListDoThiCoSan.add(Constants.DO_THI_2);
+        mListDoThiCoSan.add(Constants.DO_THI_3);
 
         // MaTran 
         mMaTran = new MaTran(Mode.CoHuong, mListDoThiCoSan.get(0));
@@ -445,6 +471,10 @@ public class MainForm extends javax.swing.JFrame
         // Button 
         btnChayMotLan.setActionCommand("ChayMotLan");
         btnChayMotLan.addActionListener(this);
+
+        // Button 
+        btnChayTungBuoc.setActionCommand("ChayTungBuoc");
+        btnChayTungBuoc.addActionListener(this);
     }
 
     @Override
@@ -473,6 +503,10 @@ public class MainForm extends javax.swing.JFrame
             case "ChayMotLan":
                 mPresenter.onSelectedChayMotLan();
                 System.err.println("Chạy 1 lần");
+                break;
+            case "ChayTungBuoc":
+                mPresenter.onSelectedChayTungBuoc();
+                System.err.println("Chạy Từng bước");
                 break;
             default:
                 break;
@@ -574,30 +608,153 @@ public class MainForm extends javax.swing.JFrame
     public void executeOneTime() {
         System.out.println("Execute One Time ");
         int soDinh = mMaTran.getListPoints().size();
-
+        int sPoint = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
+        int fPoint = Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString());
         // lấy list DataOfTwoPointForOneStep 
         mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(
                 MaTranUtils.convertListObjectToListInt(mMaTran.getListVariable()),
                 soDinh,
-                Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString()),
-                Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString()));
+                sPoint,
+                fPoint);
+
+        showDataWithStepIndicator(sPoint, fPoint,
+                mListDataOfTwoPointForOneStep.size(), mListDataOfTwoPointForOneStep.size(), soDinh);
 
         // Tạo Data cho vào table Thuật Toán 
-        Object[][] listDataForTable = new Object[soDinh][soDinh];
+//        Object[][] listDataForTable = new Object[soDinh][soDinh];
+//
+//        int step = 0;
+//        for (DataOfTwoPointForOneStep item : mListDataOfTwoPointForOneStep) {
+//            int finishPoint = item.getFinishPoint();
+//            int startPoint = item.getStartPoint();
+//            int currentValue = item.getCurrentValue();
+//            int beforeValue = item.getBeforeValue();
+//            ArrayList<Integer> listPointMarked = item.getListPointMarked();
+//
+//            // đánh dấu những điểm đã đi qua 
+//            for (int i = 0; i < listPointMarked.size(); i++) {
+//                listDataForTable[step][listPointMarked.get(i) - 1] = "---";
+//            }
+//            System.out.println("\n ---------- " + startPoint + "  ->  " + finishPoint + " -------------\n");
+////
+//            for (Entry<Integer, Integer> item2 : item.getListValue().entrySet()) {
+//                int pointConnected = item2.getKey();
+//                int valueOfPointConnected = item2.getValue();
+////                System.out.println("Điểm kết nối thử : " + pointConnected + " : " + valueOfPointConnected);
+//
+//                // step > 0 => bước > 1 
+//                if (step != 0) {
+//
+//                    // những điểm không thể kết nối được 
+//                    if (valueOfPointConnected <= beforeValue) {
+//                        System.out.println("Point connected : " + (pointConnected - 1));
+//                        listDataForTable[step][pointConnected - 1] = "[ @ ," + startPoint + " ]";
+//
+//                    }
+//                    // những điểm có thể kết nối nhưng không phải là điểm được chọn 
+//                    if (valueOfPointConnected > beforeValue
+//                            && pointConnected != finishPoint) {
+//                        listDataForTable[step][pointConnected - 1] = "[ " + valueOfPointConnected
+//                                + " , " + startPoint + " ]";
+//                    }
+//
+//                    // Điểm được chọn  
+//                    if (valueOfPointConnected > beforeValue
+//                            && pointConnected == finishPoint) {
+//                        listDataForTable[step][pointConnected - 1] = " *** [ " + valueOfPointConnected
+//                                + " , " + startPoint + " ]";
+//                    }
+//                } // step == 0 => bước 1 => kết nối với chính điểm đầu tiên  
+//                else {
+//                    if (pointConnected != startPoint) {
+//                        System.out.println("Point Connected : " + (pointConnected - 1));
+//                        listDataForTable[step][pointConnected - 1] = "[ @ ," + startPoint + " ]";
+//                    } else {
+//                        listDataForTable[step][pointConnected - 1] = " *** [ " + valueOfPointConnected
+//                                + " , " + startPoint + " ]";
+//                    }
+//                }
+//            }
+//
+//            // tăng step 
+//            step++;
+//        }
+//
+//        // tạo TableModel 
+//        mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
+//        tblThuatToan.setModel(mTableModelThuatToan);
+//        // hiển thị đường đi 
+//        // K <=> StartPoint ---- V <=> FinishPoint
+//        HashMap<Integer, Integer> listRoad = new HashMap<Integer, Integer>();
+//
+//        System.out.println("\n\t\t Đường đi cuối cùng tìm được \n");
+//        int finishBefore = sPoint;
+//        for (DataOfTwoPointForOneStep item : mListDataOfTwoPointForOneStep) {
+//            int start = item.getStartPoint();
+//            int finish = item.getFinishPoint();
+//            int curValue = item.getCurrentValue();
+//            // gặp quay lui rẽ nhánh 
+//            if (finishBefore != start
+//                    && listRoad.size() > 0) {
+//
+////                // duyệt các điểm đã đi từ cuối lên đầu 
+////                ArrayList<Integer> listKeysTemp = new ArrayList<Integer>(); 
+////                for(Integer it : listRoad.keySet()){
+////                    listKeysTemp.add(it); 
+////                }
+////                Collections.reverse(listKeysTemp); 
+////               
+////                
+////                // xoá đường đi sai 
+////                for (Integer it : listKeysTemp) {
+////                    int s = it ;
+////                    int f = listRoad.get(s);
+////                    if (s != start || f != finish) {
+////                        listRoad.remove(s);
+////                    } else {
+////                        break;
+////                    }
+////                }
+//            }
+//            listRoad.put(start, finish);
+//            finishBefore = finish;
+//        }
+//
+//        
+//        for (Entry<Integer, Integer> temp : listRoad.entrySet()) {
+//            System.out.println(temp.getValue() + " -> ");
+//        }
+    }
 
-        int step = 0;
-        for (DataOfTwoPointForOneStep item : mListDataOfTwoPointForOneStep) {
+    @Override
+    public void showDataWithStepIndicator(int sPoint, int fPoint,
+            int stepIndicator, int maxStep, int soDinh) {
+        if (stepIndicator > maxStep || stepIndicator < 1) {
+            return;
+        }
+
+        // Tạo Data cho vào table Thuật Toán 
+        Object[][] listDataForTable = new Object[stepIndicator][soDinh];
+
+        int currentLength = 0;
+        int currentFinishPoint = -1;
+
+        for (int step = 0; step < stepIndicator; step++) {
+            DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
             int finishPoint = item.getFinishPoint();
             int startPoint = item.getStartPoint();
             int currentValue = item.getCurrentValue();
             int beforeValue = item.getBeforeValue();
             ArrayList<Integer> listPointMarked = item.getListPointMarked();
 
+            currentLength = item.getCurrentValue();
+            currentFinishPoint = item.getFinishPoint();
+
             // đánh dấu những điểm đã đi qua 
             for (int i = 0; i < listPointMarked.size(); i++) {
                 listDataForTable[step][listPointMarked.get(i) - 1] = "---";
             }
-            System.out.println("\n ---------- " + startPoint + "  ->  " + finishPoint + " -------------\n");
+//            System.out.println("\n ---------- " + startPoint + "  ->  " + finishPoint + " -------------\n");
 //
             for (Entry<Integer, Integer> item2 : item.getListValue().entrySet()) {
                 int pointConnected = item2.getKey();
@@ -609,7 +766,7 @@ public class MainForm extends javax.swing.JFrame
 
                     // những điểm không thể kết nối được 
                     if (valueOfPointConnected <= beforeValue) {
-                        System.out.println("Point connected : " + (pointConnected - 1));
+//                        System.out.println("Point connected : " + (pointConnected - 1));
                         listDataForTable[step][pointConnected - 1] = "[ @ ," + startPoint + " ]";
 
                     }
@@ -629,7 +786,7 @@ public class MainForm extends javax.swing.JFrame
                 } // step == 0 => bước 1 => kết nối với chính điểm đầu tiên  
                 else {
                     if (pointConnected != startPoint) {
-                        System.out.println("Point Connected : " + (pointConnected - 1));
+//                        System.out.println("Point Connected : " + (pointConnected - 1));
                         listDataForTable[step][pointConnected - 1] = "[ @ ," + startPoint + " ]";
                     } else {
                         listDataForTable[step][pointConnected - 1] = " *** [ " + valueOfPointConnected
@@ -637,14 +794,84 @@ public class MainForm extends javax.swing.JFrame
                     }
                 }
             }
-
-            // tăng step 
-            step++;
         }
 
         // tạo TableModel 
         mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
         tblThuatToan.setModel(mTableModelThuatToan);
+
+        // hiển thị đường đi 
+        // K <=> StartPoint ---- V <=> FinishPoint
+        HashMap<Integer, Integer> listRoad = new HashMap<Integer, Integer>();
+
+        int finishBefore = sPoint;
+        for (int step = 0; step < stepIndicator; step++) {
+            DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
+            int start = item.getStartPoint();
+            int finish = item.getFinishPoint();
+            int curValue = item.getCurrentValue();
+            // gặp quay lui rẽ nhánh 
+            if (finishBefore != start
+                    && listRoad.size() > 0) {
+
+//                // duyệt các điểm đã đi từ cuối lên đầu 
+//                ArrayList<Integer> listKeysTemp = new ArrayList<Integer>(); 
+//                for(Integer it : listRoad.keySet()){
+//                    listKeysTemp.add(it); 
+//                }
+//                Collections.reverse(listKeysTemp); 
+//               
+//                
+//                // xoá đường đi sai 
+//                for (Integer it : listKeysTemp) {
+//                    int s = it ;
+//                    int f = listRoad.get(s);
+//                    if (s != start || f != finish) {
+//                        listRoad.remove(s);
+//                    } else {
+//                        break;
+//                    }
+//                }
+            }
+            listRoad.put(start, finish);
+            finishBefore = finish;
+        }
+
+        StringBuilder result = new StringBuilder();
+        result.append("Đường đi từ " + sPoint + " -> " + currentFinishPoint + " : " + sPoint + " -> ");
+        for (Entry<Integer, Integer> temp : listRoad.entrySet()) {
+            result.append(temp.getValue() + " -> ");
+        }
+
+        result.replace(result.length() - 3, result.length(), "");
+
+        // kiểm tra có phải là chạy 1 lần || đi đến bước cuối cùng hay ko 
+        if (stepIndicator == maxStep) {
+            // không có đường 
+            if (currentFinishPoint != fPoint) {
+                lblBieuDienThuatToan.setText("Không có đường đi từ điểm " + sPoint + " -> " + fPoint);
+                return;
+            }
+        }
+
+        // kiểm tra xem có đường đi hay ko 
+        result.append("\t\t\t\nTổng giá trị đường đi : " + currentLength);
+        lblBieuDienThuatToan.setText(result.toString());
     }
 
+    @Override
+    public void executePerStep(int stepIndicator) {
+        int soDinh = mMaTran.getListPoints().size();
+        int sPoint = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
+        int fPoint = Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString());
+        // lấy list DataOfTwoPointForOneStep 
+        if (stepIndicator == 1) {
+            mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(
+                    MaTranUtils.convertListObjectToListInt(mMaTran.getListVariable()),
+                    soDinh,
+                    sPoint,
+                    fPoint);
+        }
+        showDataWithStepIndicator(sPoint, fPoint, stepIndicator, mListDataOfTwoPointForOneStep.size(), soDinh);
+    }
 }

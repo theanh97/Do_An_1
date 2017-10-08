@@ -18,6 +18,7 @@ public class MainFormPresenter implements IMainFormPresenter {
 
     // Co Huong || Vo Huong
     private Mode mMode = Mode.CoHuong;
+    private int stepIndicator = 0;
 
     public MainFormPresenter(IMainForm view) {
         this.mView = view;
@@ -25,6 +26,7 @@ public class MainFormPresenter implements IMainFormPresenter {
 
     @Override
     public void onSelectedDoThiCoHuong() {
+        stepIndicator = 0;
         mView.updateDoThiCoHuong();
         mMode = Mode.CoHuong;
     }
@@ -33,20 +35,24 @@ public class MainFormPresenter implements IMainFormPresenter {
     public void onSelectedDoThiVoHuong() {
         mView.updateDoThiVoHuong();
         mMode = Mode.VoHuong;
+        stepIndicator = 0;
     }
 
     @Override
     public void onSelectedDoThiTuVe() {
+        stepIndicator = 0;
         mView.updateDoThiTuVe();
     }
 
     @Override
     public void onSelectedDoThiCoSan() {
+        stepIndicator = 0;
         mView.updateDoThiCoSan(mMode);
     }
 
     @Override
     public void onSelectedDoThiCoSanPosition(int position) {
+        stepIndicator = 0;
         if (position >= 0) {
             mView.updateDoThiCoSanPosition(mMode, position);
         }
@@ -54,9 +60,19 @@ public class MainFormPresenter implements IMainFormPresenter {
 
     @Override
     public void onSelectedChayMotLan() {
-        boolean isValid = mView.checkValidBeforeExecute(); 
-        if(isValid){
+        stepIndicator = 0;
+        boolean isValid = mView.checkValidBeforeExecute();
+        if (isValid) {
             mView.executeOneTime();
+        }
+    }
+
+    @Override
+    public void onSelectedChayTungBuoc() {
+        boolean isValid = mView.checkValidBeforeExecute();
+        if (isValid) {
+            stepIndicator++;
+            mView.executePerStep(stepIndicator);
         }
     }
 

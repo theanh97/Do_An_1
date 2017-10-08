@@ -21,4 +21,6 @@ public interface IMainFormPresenter {
     public void onSelectedDoThiCoSanPosition(int position);
     
     public void onSelectedChayMotLan();
+    
+    public void onSelectedChayTungBuoc() ;
 }

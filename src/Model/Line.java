@@ -52,13 +52,13 @@ public class Line {
     public void setValue(int value) {
         this.value = value;
     }
-        private int startIndicator ;
-        private int endIndicator ;
-       private int value; 
-       
-       public Line(int startIndicator , int endIndicator , int value ){
-           this.startIndicator = startIndicator; 
-           this.endIndicator = endIndicator; 
-           this.value = value ;
-       }
+    private int startIndicator;
+    private int endIndicator;
+    private int value;
+
+    public Line(int startIndicator, int endIndicator, int value) {
+        this.startIndicator = startIndicator;
+        this.endIndicator = endIndicator;
+        this.value = value;
+    }
 }
