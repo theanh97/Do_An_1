@@ -5,9 +5,14 @@
  */
 package Utils;
 
+import Draw.MShape;
+import Draw.ShapeLine;
+import Draw.ShapePoint;
 import Model.Line;
-import Model.Point;
+import Model.MPoint;
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -16,8 +21,9 @@ import java.util.Iterator;
  */
 public class MaTranUtils {
 
-    public static ArrayList<Point> convertListVariableToListPoint(Object[][] listVariables) {
-        ArrayList<Point> listPoints = new ArrayList<Point>();
+    public static ArrayList<MPoint> convertListVariableToListPoint(Object[][] listVariables,
+            Point[] coordinate) {
+        ArrayList<MPoint> listPoints = new ArrayList<MPoint>();
         int size = listVariables.length;
         for (int i = 0; i < size; i++) {
             ArrayList<Line> listLines = new ArrayList<Line>();
@@ -26,13 +32,13 @@ public class MaTranUtils {
                 Line line = new Line(i + 1, j + 1, value);
                 listLines.add(line);
             }
-            Point point = new Point(i + 1, listLines);
+            MPoint point = new MPoint(i + 1, coordinate[i], listLines);
             listPoints.add(point);
         }
         return listPoints;
     }
 
-    public static Object[][] convertListPointsToListVariables(ArrayList<Point> listPoints) {
+    public static Object[][] convertListPointsToListVariables(ArrayList<MPoint> listPoints) {
         int size = listPoints.size();
         Object[][] listVariables = new Object[size][size];
         for (int i = 0; i < size; i++) {
@@ -44,15 +50,45 @@ public class MaTranUtils {
 
         return listVariables;
     }
-    
-    public static int[][] convertListObjectToListInt(Object[][] listObject){
+
+    public static int[][] convertListObjectToListInt(Object[][] listObject) {
         int size = listObject.length;
-        int[][] listInt = new int[size][size]; 
-        for(int i =0 ; i< size; i++){
-            for(int j =0; j< size; j++){
+        int[][] listInt = new int[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 listInt[i][j] = (int) listObject[i][j];
             }
         }
-        return listInt; 
+        return listInt;
+    }
+
+    public static ArrayList<MShape> convertListDatasToListShape(ArrayList<MPoint> listDatas, boolean isCoHuong) {
+        HashMap<Integer, MPoint> listPoint = new HashMap<Integer, MPoint>();
+
+        for (MPoint point : listDatas) {
+            listPoint.put(point.getIndicator(), point);
+        }
+
+        ArrayList<MShape> list = new ArrayList<MShape>();
+        for (MPoint point : listDatas) {
+            // shape point
+            ShapePoint sp = new ShapePoint(point.getOriginPoint(), point.getIndicator(), false);
+            list.add(sp);
+            // shape line 
+            for (Line line : point.getListLine()) {
+                if (line.getValue() != 0) {
+                    ShapeLine sl = new ShapeLine(
+                            point.getOriginPoint(),
+                            listPoint.get(line.getEndIndicator()).getOriginPoint(),
+                            line.getValue(),
+                            isCoHuong,
+                            false,
+                            line.getStartIndicator(),
+                            line.getEndIndicator());
+                    list.add(sl);
+                }
+            }
+        }
+        return list;
     }
 }

@@ -5,6 +5,7 @@
  */
 package Model;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -12,7 +13,36 @@ import java.util.Vector;
  *
  * @author DELL
  */
-public class Point {
+public class MPoint {
+
+    private int indicator;
+    private Point originPoint;
+    private ArrayList<Line> listLine;
+
+    public MPoint(int indicator, ArrayList<Line> listLine) {
+        this.indicator = indicator;
+        this.listLine = listLine;
+    }
+
+    public MPoint(int indicator, Point originPoint, ArrayList<Line> listLine) {
+        this.indicator = indicator;
+        this.listLine = listLine;
+        this.originPoint = originPoint;
+    }
+
+    /**
+     * @return the originPoint
+     */
+    public Point getOriginPoint() {
+        return originPoint;
+    }
+
+    /**
+     * @param originPoint the originPoint to set
+     */
+    public void setOriginPoint(Point originPoint) {
+        this.originPoint = originPoint;
+    }
 
     /**
      * @return the indicator
@@ -41,11 +71,5 @@ public class Point {
     public void setListLine(ArrayList<Line> listLine) {
         this.listLine = listLine;
     }
-    private int indicator ;
-    private ArrayList<Line> listLine;
-    
-    public Point(int indicator , ArrayList<Line>listLine){
-        this.indicator = indicator; 
-        this.listLine = listLine; 
-    }
+
 }

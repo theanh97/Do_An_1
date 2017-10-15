@@ -7,6 +7,7 @@ package Model;
 
 import Utils.MaTranUtils;
 import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -15,10 +16,16 @@ import java.util.ArrayList;
  */
 public class MaTran {
 
-    public MaTran(Mode mode, Object[][] listVariableCoHuong) {
+    private Mode mode;
+    private ArrayList<MPoint> listPoints;
+    private Object[][] listVariableCoHuong;
+    private Object[][] listVariableVoHuong;
+    private Object[] ColumnsName;
+
+    public MaTran(Mode mode, Object[][] listVariableCoHuong, Point[] coordinate) {
         this.mode = mode;
         this.listVariableCoHuong = listVariableCoHuong;
-        this.listPoints = MaTranUtils.convertListVariableToListPoint(listVariableCoHuong);
+        this.listPoints = MaTranUtils.convertListVariableToListPoint(listVariableCoHuong, coordinate);
         getListVariablesVoHuongFromListVariablesCoHuong();
         createColumnsName();
     }
@@ -26,14 +33,14 @@ public class MaTran {
     /**
      * @return the listPoints
      */
-    public ArrayList<Point> getListPoints() {
+    public ArrayList<MPoint> getListPoints() {
         return listPoints;
     }
 
     /**
      * @param listPoints the listPoints to set
      */
-    public void setListPoints(ArrayList<Point> listPoints) {
+    public void setListPoints(ArrayList<MPoint> listPoints) {
         this.listPoints = listPoints;
     }
 
@@ -78,12 +85,6 @@ public class MaTran {
     public void setlistVariableCoHuong(Object[][] listVariableCoHuong) {
         this.listVariableCoHuong = listVariableCoHuong;
     }
-
-    private Mode mode;
-    private ArrayList<Point> listPoints;
-    private Object[][] listVariableCoHuong;
-    private Object[][] listVariableVoHuong;
-    private Object[] ColumnsName;
 
     public void createColumnsName() {
         int size = getListPoints().size();
