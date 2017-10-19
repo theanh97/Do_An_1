@@ -31,10 +31,10 @@ public class Const {
     
     public static Point [] DO_THI_1_COORDINATE = {
         new Point(50,50),
-        new Point(50,200),
-        new Point(150,50),
-        new Point(150,200),
-        new Point(250,135),
+        new Point(50,250),
+        new Point(200,50),
+        new Point(200,250),
+        new Point(350,150),
     };
 
     public static Object[][] DO_THI_2 = {
@@ -49,12 +49,12 @@ public class Const {
     
      public static Point [] DO_THI_2_COORDINATE = {
         new Point(50,50),
-        new Point(50,200),
-        new Point(150,50),
-        new Point(150,200),
-        new Point(250,50),
-        new Point(250,200),
-        new Point(350,275),
+        new Point(50,250),
+        new Point(200,50),
+        new Point(200,320),
+        new Point(350,50),
+        new Point(350,250),
+        new Point(500,150),
     };
      
      // Draw 
@@ -65,5 +65,5 @@ public class Const {
      public static Color COLOR_POINT_INDICATOR = Color.GREEN;
      public static int POINT_RADIUS = 35 ;
      public static int X_POINT_INDICATOR = 14; 
-     public static int Y_POINT_INDICATOR = 20; 
+     public static int Y_POINT_INDICATOR = 23; 
 }

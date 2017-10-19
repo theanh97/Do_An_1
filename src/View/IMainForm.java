@@ -5,8 +5,11 @@
  */
 package View;
 
+import Draw.ShapeLine;
+import Draw.ShapePoint;
 import Model.MaTran;
 import Model.MaTran.Mode;
+import java.util.ArrayList;
 
 /**
  *
@@ -30,11 +33,43 @@ public interface IMainForm {
 
     public void updateDoThiCoSanPosition(Mode mode, int position);
 
+    public void clearViewOfOldRoad();
+
     public boolean checkValidBeforeExecute();
 
     public void executeOneTime();
-    
-    public void executePerStep(int stepIndicator) ;
 
-    public void showDataWithStepIndicator(int startPoint , int finishPoint , int stepIndicator, int maxStep, int soDinh);
+    public void executePerStep(int stepIndicator);
+
+    public void showDataWithStepIndicator(int startPoint, int finishPoint, int stepIndicator, int maxStep, int soDinh);
+
+    public void setFlagDiChuyen1Diem();
+
+    public void setFlagNoi2Diem();
+
+    public void setFlagXoaDiem();
+
+    public void setFlagThemDiem();
+
+    public void setFlagXoaDuongThang();
+
+    public void setFlagThayDoiGiaTri();
+
+    public void updateViewAndDataWithActionDiChuyen1Diem(ArrayList<ShapePoint> listShapePoints,
+            ArrayList<ShapeLine> listShapeLines);
+
+    public void updateViewAndDataWithActionNoi2Diem(ArrayList<ShapePoint> listShapePoints,
+            ArrayList<ShapeLine> listShapeLines);
+
+    public void updateViewAndDataWithActionXoaDiem(ArrayList<ShapePoint> listShapePoints,
+            ArrayList<ShapeLine> listShapeLines);
+
+    public void updateViewAndDataWithActionThemDiem(ArrayList<ShapePoint> listShapePoints,
+            ArrayList<ShapeLine> listShapeLines);
+
+    public void updateViewAndDataWithActionXoaDuongThang(ArrayList<ShapePoint> listShapePoints,
+            ArrayList<ShapeLine> listShapeLines);
+
+    public void updateViewAndDataWithActionThayDoiGiaTri(ArrayList<ShapePoint> listShapePoints,
+            ArrayList<ShapeLine> listShapeLines);
 }

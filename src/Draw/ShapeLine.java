@@ -8,6 +8,7 @@ package Draw;
 import Utils.Const;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -44,43 +45,77 @@ public class ShapeLine implements MShape {
         } else {
             color = Const.COLOR_LINE_NORMAL;
         }
-        this.startIndicator = startIndicator; 
+        this.startIndicator = startIndicator;
         this.finishIndicator = finishIndicator;
     }
 
     @Override
     public void paint(Graphics2D g) {
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
+        g2d.setFont(new Font("default", Font.BOLD, 19));
 
         // draw line 
         int x11 = getOriginPoint().x + 15;
         int y11 = getOriginPoint().y + 15;
         int x22 = getFinishPoint().x + 15;
         int y22 = getFinishPoint().y + 15;
-//        g2d.setColor(Color.CYAN);
-        g2d.setColor(Color.WHITE);
+
+        int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+
+        x1 = x11;
+        y1 = y11;
+        x2 = Math.abs(x22 - x11) / 2 + Math.min(x22, x11);
+        y2 = Math.abs(y22 - y11) / 2 + Math.min(y22, y11);
+
+        // draw Value of 2 Point
+        if (Math.abs(x2 - x1) < 50) {
+            if (x1 < x2) {
+                g2d.drawString("\t" + getValue(), x2 - 10, y2 + 10);
+            } else {
+                g2d.drawString("\t" + getValue(), x2 + 10, y2 + 10);
+            }
+
+        } else {
+            if (x1 < x2) {
+                g2d.drawString("\t" + getValue(), x2 - 30, y2 + 10);
+            } else {
+                g2d.drawString("\t" + getValue(), x2 + 30, y2 + 10);
+            }
+        }
 
         Polygon polygon = new Polygon();
-        polygon.addPoint(x11 - 14, y11);
-        polygon.addPoint(x22 - 14, y22);
-        polygon.addPoint(x22 + 14, y22);
-        polygon.addPoint(x11 + 14, y11);
-        polygon.addPoint(x11, y11);
+        if (Math.abs(y22 - y11) > 50) {
+            polygon.addPoint(x11 - 14, y11);
+            polygon.addPoint(x22 - 14, y22);
+            polygon.addPoint(x22 + 14, y22);
+            polygon.addPoint(x11 + 14, y11);
+            polygon.addPoint(x11, y11);
+        } else {
+            polygon.addPoint(x11, y11 - 14);
+            polygon.addPoint(x22, y22 - 14);
+            polygon.addPoint(x22, y22 + 14);
+            polygon.addPoint(x11, y11 + 14);
+            polygon.addPoint(x11, y11);
+        }
 
         setShape(polygon);
+        g2d.setColor(Color.WHITE);
         g2d.draw(getShape());
 
-        g2d.setColor(getColor());
+        g2d.setColor(color);
 
         g2d.drawLine(x11, y11, x22, y22);
 
-        int x1 = x11;
-        int y1 = y11;
-        int x2 = Math.abs(x22 - x11) / 2 + Math.min(x22, x11);
-        int y2 = Math.abs(y22 - y11) / 2 + Math.min(y22, y11);
-
+//        if (x11 < x22) {
+//            x1 = x11;
+//            y1 = y11;
+//            x2 = Math.abs(x22 - x11) / 3 + Math.min(x22, x11);
+//            int ch = (int) Math.sqrt(Math.pow((Math.abs(x22 - x11)), 2) + Math.pow((Math.abs(y22 - y11)), 2));
+//            y2 = Math.min(y22, y11) + ch / 3;
+//        }
         // draw triangle 
-        if (isIsCoHuong()) {
+        if (isCoHuong) {
             int dx = x2 - x1, dy = y2 - y1;
             double D = Math.sqrt(dx * dx + dy * dy);
             double xm = D - 5, xn = xm, ym = 5, yn = -5, x;
@@ -100,8 +135,6 @@ public class ShapeLine implements MShape {
             g.fillPolygon(xpoints, ypoints, 3);
         }
 
-        // draw Value of 2 Point
-        g2d.drawString("\t" + getValue(), x2 + 10, y2);
     }
 
     /**
@@ -172,6 +205,7 @@ public class ShapeLine implements MShape {
      */
     public void setIsCoHuong(boolean isCoHuong) {
         this.isCoHuong = isCoHuong;
+
     }
 
     /**
@@ -186,6 +220,11 @@ public class ShapeLine implements MShape {
      */
     public void setIsSelected(boolean isSelected) {
         this.isSelected = isSelected;
+        if (isSelected) {
+            color = Const.COLOR_LINE_SELECTED;
+        } else {
+            color = Const.COLOR_LINE_NORMAL;
+        }
     }
 
     /**

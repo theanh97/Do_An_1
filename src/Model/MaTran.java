@@ -149,4 +149,16 @@ public class MaTran {
     public void setColumnsName(Object[] ColumnsName) {
         this.ColumnsName = ColumnsName;
     }
+    
+    public void updateMaTranWithListPoints(ArrayList<MPoint> listPoints){
+        // update list points 
+        this.listPoints.clear();
+        this.listPoints.addAll(listPoints);
+        // update list variables có hướng  
+        this.listVariableCoHuong = MaTranUtils.convertListPointsToListVariables(listPoints);
+        // update list variables vô hướng 
+        getListVariablesVoHuongFromListVariablesCoHuong();
+        // update columns name 
+        createColumnsName();
+    }
 }

@@ -66,15 +66,21 @@ public class Dijkstra {
         back[start] = 0;
         weight[start] = 0;
 
+        ArrayList<Pair<Integer, Integer>> listRoads = new ArrayList<Pair<Integer, Integer>>();
+
         // kiểm tra đồ thị có liên thông hay ko 
         int connect = -1;
+        
+        // Điểm xuất phát đúng trong trường hợp bị rẽ nhánh
+        int newStartPoint = start;
+
         do {
             // listValues of DataOfTwoPoints
             HashMap<Integer, Integer> listValues = new HashMap<Integer, Integer>();
             int startPoint;
             int finishPoint;
             int beforeValue;
-            int currentValue;
+            int currentValue = -1;
             ArrayList<Integer> listPointMarked = new ArrayList<Integer>();
 
             // đỉnh bắt đầu là đỉnh 0 => gán connect = -1 
@@ -94,28 +100,46 @@ public class Dijkstra {
 
                     // lưu lại cặp giá trị ( đỉnh đang thử nối - độ dài đường đi đến điểm đó ) 
                     int pointConnected = j + 1;
-                    int length = weight[start] + doThi[start][j];
-
-                    listValues.put(pointConnected, length);
 
                     // nếu tồn tại đường đi giữa đỉnh i và j
                     // weight[j] : tổng trọng số từ đỉnh bắt đầu -> đỉnh đang xét 
                     //  weight[start] + DO_THI[start][j] : trọng số đang xét
 //                    System.out.println("\tĐỉnh nối : " + (j + 1) + " --- Value : " + (weight[start] + doThi[start][j]));
-                    if (doThi[start][j] != 0
-                            && weight[j] > weight[start] + doThi[start][j]) {
-                        // lưu lại dùng để so sánh lần sau 
-                        weight[j] = weight[start] + doThi[start][j];
-                        back[j] = start;
+                    if (doThi[start][j] > 0) {
+                        if (doThi[start][j] != 0
+                                && weight[j] > weight[start] + doThi[start][j]) {
+
+                            boolean addNewRoadFlag = true;
+                            for (Pair<Integer, Integer> road : listRoads) {
+                                if (road.getKey() == j) {
+                                    addNewRoadFlag = false;
+                                    listRoads.remove(road);
+                                    listRoads.add(new Pair(j, start));
+                                    break;
+                                }
+                            }
+
+                            if (addNewRoadFlag) {
+                                listRoads.add(new Pair(j, start));
+                            }
+
+                            // lưu lại dùng để so sánh lần sau 
+                            weight[j] = weight[start] + doThi[start][j];
+                            back[j] = start;
+                        }
                     }
+
+                    int length = weight[j];
+                    listValues.put(pointConnected, length);
 
                     // dựa vào mảng weight -> tìm đường đi ngắn nhất hiện tại 
                     if (min > weight[j]) {
 
-                        // kiểm tra xem có phải là điểm rẽ nhánh hay ko 
-                        // nếu có thêm vào
-                        if (doThi[start][j] == 0 && j != firstStart) {
-                            PointReNhanh = j;
+                        for (Pair<Integer, Integer> road : listRoads) {
+                            if (road.getKey() == j) {
+                                newStartPoint = road.getValue();
+                                break;
+                            }
                         }
 
                         min = weight[j];
@@ -128,6 +152,8 @@ public class Dijkstra {
                 }
             }
 
+            System.out.println("\n------ Điểm được chọn : ( " + (newStartPoint + 1) + " , " + (connect + 1) + " ) ");
+
             start = connect;
 //            System.out.println("Đỉnh nối được chọn : " + (start + 1));
 
@@ -137,128 +163,24 @@ public class Dijkstra {
                     listPointMarked.add(i + 1);
                 }
             }
-            currentValue = weight[start];
-//            System.out.println("Giá trị trước đó : " + beforeValue);
-//            System.out.println("Giá trị Hiện tại: " + currentValue);
 
-//            System.out.println("Các điểm đã đi qua : ");
-//            for (int i = 0; i < listPointMarked.size(); i++) {
-//                System.out.println(listPointMarked.get(i) + " - ");
-//            }
-            finishPoint = start + 1;
-
-            // có hiện tượng rẽ nhánh 
-            if (PointReNhanh != -1 && PointReNhanh == connect) {
-                System.out.println("Có hiện tượng rẽ nhánh tại : " + PointReNhanh);
-                int startPointBefore = -1;
-                // tìm điểm nối ( startPoint ) trước đó
-                for (int i = 0; i < soDinh; i++) {
-                    if (doThi[i][PointReNhanh] + weight[i] == weight[PointReNhanh]) {
-                        startPointBefore = i + 1;
-                        break;
-                    }
-                }
-
-                // tìm được 
-                if (startPointBefore != -1) {
-                    System.out.println("Start Point Before : " + startPointBefore);
-                    // tìm dữ liệu của step trước đó có hiện tượng đi sai nhánh 
-                    for (int i = listDataOfTwoPointsForOneStep.size() - 1; i >= 0; i--) {
-                        DataOfTwoPointForOneStep temp = listDataOfTwoPointsForOneStep.get(i);
-                        // tìm thấy step đi sai nhánh 
-                        if (temp.getStartPoint() == startPointBefore) {
-                            System.out.println("\nStart : " + temp.getStartPoint()
-                                    + "\nFinish : " + temp.getFinishPoint());
-
-                            // cập nhật lại đỉnh đã đi qua 
-                            for (int z = 0; z < temp.getListPointMarked().size(); z++) {
-                                int value = temp.getListPointMarked().get(z);
-                                if (value == temp.getFinishPoint()) {
-                                    temp.getListPointMarked().remove(z);
-                                }
-                            }
-                            temp.getListPointMarked().add(PointReNhanh + 1);
-
-                            DataOfTwoPointForOneStep dotpfos = new DataOfTwoPointForOneStep(
-                                    temp.getStartPoint(),
-                                    PointReNhanh + 1,
-                                    temp.getListValue(),
-                                    temp.getBeforeValue(),
-                                    weight[PointReNhanh],
-                                    temp.getListPointMarked());
-                            listDataOfTwoPointsForOneStep.add(dotpfos);
-                            break;
-                        }
-                    }
-                }
-            } else {
-                // tạo DataTwoOfPoint 
-                DataOfTwoPointForOneStep dotpfos = new DataOfTwoPointForOneStep(
-                        startPoint, finishPoint, listValues, beforeValue, currentValue, listPointMarked);
-                listDataOfTwoPointsForOneStep.add(dotpfos);
+            finishPoint = connect + 1;
+            if (connect != -1) {
+                currentValue = weight[connect];
+                mark[connect] = 1;
             }
 
-            if (start == -1) {
-                isSuccess = false;
-                break;
-            }
-            mark[start] = 1;
-
-            // kiểm tra xem có thể quay lui rẽ nhánh hay không 
-            // nếu có thì thêm vào listDataOfTwoPointsForOneStep 
-            if (connect == -1 && listDataOfTwoPointsForOneStep.size() > 1) {
-                System.out.println("Phải quay lui lại thui");
-                boolean foundedFlag = false;
-                for (int i = listDataOfTwoPointsForOneStep.size() - 1; i >= 0; i--) {
-                    DataOfTwoPointForOneStep item = listDataOfTwoPointsForOneStep.get(i);
-                    int minValueBefore = item.getBeforeValue();
-                    int minCurrentValue = Integer.MAX_VALUE;
-                    int minPointBefore = item.getFinishPoint();
-                    int newPointFounded = -1;
-                    // kiểm tra xem có đường nào hợp lệ để rẽ qua hay không  
-                    for (Map.Entry<Integer, Integer> item2 : item.getListValue().entrySet()) {
-                        int point = item2.getKey();
-                        int value = item2.getValue();
-
-                        if (point != minPointBefore
-                                && value > minValueBefore
-                                && value < minCurrentValue) {
-                            minCurrentValue = value;
-                            newPointFounded = point;
-                            foundedFlag = true;
-                        }
-                    }
-
-                    // tìm thấy đường rẽ nhánh quay lui 
-                    if (foundedFlag == true) {
-                        listPointMarked.add(newPointFounded);
-                        listDataOfTwoPointsForOneStep.add(
-                                new DataOfTwoPointForOneStep(
-                                        item.getStartPoint(),
-                                        newPointFounded,
-                                        item.getListValue(),
-                                        item.getBeforeValue(),
-                                        minCurrentValue,
-                                        item.getListPointMarked()));
-                    } // step lui lại không thích hợp -> bỏ đánh dấu đi qua tại điểm đó 
-                    else {
-                        listPointMarked.remove(listPointMarked.size() - 1);
-                    }
-                }
-            }
-
-//            for (int i = 0; i < 10; i++) {
-//                if (back[i] != 0) {
-//                    System.out.println("\tWeight[" + (i + 1) + "] : " + weight[i]);
-//                }
-//            }
-//            System.out.println("Tổng hiện Tại : " + weight[finish]);
+            
+            // tạo data và add vào list 
+            DataOfTwoPointForOneStep dotpfos = new DataOfTwoPointForOneStep(
+                    newStartPoint + 1, finishPoint, listValues, beforeValue, currentValue, listPointMarked);
+            listDataOfTwoPointsForOneStep.add(dotpfos);
         } while (connect != -1 && start != finish);
 
         // nếu có đường đi 
         if (isSuccess == true) {
-            System.out.print((firstStart + 1) + " ->");
-            printPath(firstStart, finish, back);
+            System.out.print(("\nĐường đi cuối cùng : " + (firstStart + 1)) + " ->");
+//            printPath(firstStart, finish, back);
             System.out.println("\n" + weight[finish] + "\n");
             return listDataOfTwoPointsForOneStep;
         } // nếu ko có đường đi 

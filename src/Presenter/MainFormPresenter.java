@@ -5,8 +5,13 @@
  */
 package Presenter;
 
+import Draw.DrawDoThi;
+import Draw.DrawDoThi.Flag;
+import Draw.ShapeLine;
+import Draw.ShapePoint;
 import Model.MaTran.Mode;
 import View.IMainForm;
+import java.util.ArrayList;
 
 /**
  *
@@ -27,15 +32,15 @@ public class MainFormPresenter implements IMainFormPresenter {
     @Override
     public void onSelectedDoThiCoHuong() {
         stepIndicator = 0;
-        mView.updateDoThiCoHuong();
         mMode = Mode.CoHuong;
+        mView.updateDoThiCoHuong();
     }
 
     @Override
     public void onSelectedDoThiVoHuong() {
-        mView.updateDoThiVoHuong();
-        mMode = Mode.VoHuong;
         stepIndicator = 0;
+        mMode = Mode.VoHuong;
+        mView.updateDoThiVoHuong();
     }
 
     @Override
@@ -48,6 +53,12 @@ public class MainFormPresenter implements IMainFormPresenter {
     public void onSelectedDoThiCoSan() {
         stepIndicator = 0;
         mView.updateDoThiCoSan(mMode);
+    }
+
+    @Override
+    public void onSelectedDuongDiMoi() {
+        stepIndicator = 0;
+        mView.clearViewOfOldRoad();
     }
 
     @Override
@@ -76,4 +87,50 @@ public class MainFormPresenter implements IMainFormPresenter {
         }
     }
 
+    @Override
+    public void onSelectedDiChuyen1Diem() {
+        mView.setFlagDiChuyen1Diem();
+    }
+
+    @Override
+    public void onSelectedNoi2Diem() {
+        mView.setFlagNoi2Diem();
+    }
+
+    @Override
+    public void onSelectedXoaDiem() {
+        mView.setFlagXoaDiem();
+    }
+
+    @Override
+    public void onSelectedThemDiem() {
+        mView.setFlagThemDiem();
+    }
+
+    @Override
+    public void onSelectedXoaDuongThang() {
+        mView.setFlagXoaDuongThang();
+    }
+
+    @Override
+    public void onSelectedThayDoiGiaTri() {
+        mView.setFlagThayDoiGiaTri();
+    }
+
+    @Override
+    public void onCallBackUpdatedFromDrawDoThi(DrawDoThi.Flag flagUpdate, ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
+        if (flagUpdate == Flag.DI_CHUYEN_1_DIEM) {
+            mView.updateViewAndDataWithActionDiChuyen1Diem(listShapePoints, listShapeLines);
+        } else if (flagUpdate == Flag.NOI_2_DIEM) {
+            mView.updateViewAndDataWithActionNoi2Diem(listShapePoints, listShapeLines);
+        } else if (flagUpdate == Flag.XOA_DIEM) {
+            mView.updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
+        } else if (flagUpdate == Flag.THEM_DIEM) {
+            mView.updateViewAndDataWithActionThemDiem(listShapePoints, listShapeLines);
+        } else if (flagUpdate == Flag.XOA_DUONG_THANG) {
+            mView.updateViewAndDataWithActionXoaDuongThang(listShapePoints, listShapeLines);
+        } else if (flagUpdate == Flag.THAY_DOI_GIA_TRI) {
+            mView.updateViewAndDataWithActionThayDoiGiaTri(listShapePoints, listShapeLines);
+        } 
+    }
 }

@@ -17,6 +17,7 @@ import java.awt.geom.Ellipse2D;
  * @author DELL
  */
 public class ShapePoint implements MShape {
+
     private Point originPoint;
     private int indicator;
     private Color color;
@@ -93,6 +94,12 @@ public class ShapePoint implements MShape {
      */
     public void setIsSelected(boolean isSelected) {
         this.isSelected = isSelected;
+        if (isSelected) {
+            color = Const.COLOR_POINT_SELECTED;
+        } else {
+            color = Const.COLOR_POINT_NORMAL;
+        }
+
     }
 
 }

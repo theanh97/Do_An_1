@@ -7,7 +7,10 @@ package View;
 
 import Algorithm.DataOfTwoPointForOneStep;
 import Algorithm.Dijkstra;
+import Draw.CallBackToMainForm;
 import Draw.DrawDoThi;
+import Draw.ShapeLine;
+import Draw.ShapePoint;
 import Model.MaTran;
 import Model.MaTran.Mode;
 import Model.MPoint;
@@ -41,6 +44,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.BorderFactory;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -49,7 +54,8 @@ import javax.swing.Timer;
  */
 public class MainForm extends javax.swing.JFrame
         implements IMainForm,
-        ActionListener {
+        ActionListener,
+        CallBackToMainForm {
 
     MainFormPresenter mPresenter;
 
@@ -69,13 +75,12 @@ public class MainForm extends javax.swing.JFrame
         mPresenter = new MainFormPresenter(this);
         setEventListener();
         initData();
-        
-        mDrawDoThi = new DrawDoThi(mMaTran.getListPoints(),mMaTran.isMode().equals(Mode.CoHuong));
+
+        mDrawDoThi = new DrawDoThi(this, mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
         mDrawDoThi.setBounds(334, 27, 884, 384);
         add(mDrawDoThi);
-        
-        prepareUI();
 
+        prepareUI();
 
     }
 
@@ -104,6 +109,13 @@ public class MainForm extends javax.swing.JFrame
         lblBieuDienThuatToan = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblMaTran = new javax.swing.JTable();
+        panelChinhSuaDoThi = new javax.swing.JPanel();
+        btnNoi2Diem = new javax.swing.JButton();
+        btnDiChuyen1Diem = new javax.swing.JButton();
+        btnXoaDiem = new javax.swing.JButton();
+        btnThemDiem = new javax.swing.JButton();
+        btnThayDoiGiaTri = new javax.swing.JButton();
+        btnXoaDuongThang = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TÌM ĐƯỜNG ĐI NGẮN NHẤT ");
@@ -273,6 +285,58 @@ public class MainForm extends javax.swing.JFrame
         ));
         jScrollPane3.setViewportView(tblMaTran);
 
+        panelChinhSuaDoThi.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Chỉnh sửa đồ thị", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+
+        btnNoi2Diem.setText("Nối 2 điểm");
+
+        btnDiChuyen1Diem.setText("Di chuyển");
+        btnDiChuyen1Diem.setToolTipText("");
+
+        btnXoaDiem.setText("Xoá Điểm");
+        btnXoaDiem.setToolTipText("");
+
+        btnThemDiem.setText("Thêm Điểm");
+        btnThemDiem.setToolTipText("");
+
+        btnThayDoiGiaTri.setText("Thay đổi giá trị");
+        btnThayDoiGiaTri.setToolTipText("");
+
+        btnXoaDuongThang.setText("Xoá đường thẳng");
+        btnXoaDuongThang.setToolTipText("");
+
+        javax.swing.GroupLayout panelChinhSuaDoThiLayout = new javax.swing.GroupLayout(panelChinhSuaDoThi);
+        panelChinhSuaDoThi.setLayout(panelChinhSuaDoThiLayout);
+        panelChinhSuaDoThiLayout.setHorizontalGroup(
+            panelChinhSuaDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelChinhSuaDoThiLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnDiChuyen1Diem)
+                .addGap(18, 18, 18)
+                .addComponent(btnNoi2Diem)
+                .addGap(18, 18, 18)
+                .addComponent(btnXoaDiem)
+                .addGap(18, 18, 18)
+                .addComponent(btnXoaDuongThang)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnThemDiem)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnThayDoiGiaTri)
+                .addContainerGap())
+        );
+        panelChinhSuaDoThiLayout.setVerticalGroup(
+            panelChinhSuaDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelChinhSuaDoThiLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(panelChinhSuaDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDiChuyen1Diem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNoi2Diem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnXoaDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnThemDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnThayDoiGiaTri, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnXoaDuongThang, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -280,6 +344,7 @@ public class MainForm extends javax.swing.JFrame
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -287,12 +352,13 @@ public class MainForm extends javax.swing.JFrame
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(51, 51, 51)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addGap(20, 20, 20))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panelChinhSuaDoThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,13 +371,16 @@ public class MainForm extends javax.swing.JFrame
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelChinhSuaDoThi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -365,8 +434,14 @@ public class MainForm extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChayMotLan;
     private javax.swing.JButton btnChayTungBuoc;
+    private javax.swing.JButton btnDiChuyen1Diem;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.ButtonGroup btnGroupPhuongThucNhapDoThi;
+    private javax.swing.JButton btnNoi2Diem;
+    private javax.swing.JButton btnThayDoiGiaTri;
+    private javax.swing.JButton btnThemDiem;
+    private javax.swing.JButton btnXoaDiem;
+    private javax.swing.JButton btnXoaDuongThang;
     private javax.swing.JComboBox<String> cmbDiemCuoi;
     private javax.swing.JComboBox<String> cmbDiemXuatPhat;
     private javax.swing.JComboBox<String> cmbDoThiCoSan;
@@ -378,6 +453,7 @@ public class MainForm extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblBieuDienThuatToan;
+    private javax.swing.JPanel panelChinhSuaDoThi;
     private javax.swing.JRadioButton rdbCoHuong;
     private javax.swing.JRadioButton rdbDoThiCoSan;
     private javax.swing.JRadioButton rdbTuVe;
@@ -388,6 +464,8 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void prepareUI() {
+        btnDiChuyen1Diem.setFocusPainted(true);
+
         // combobox Do thi co san 
         cmbDoThiCoSan.removeAllItems();
         cmbDoThiCoSan.addItem("Đồ thị 1");
@@ -423,13 +501,13 @@ public class MainForm extends javax.swing.JFrame
         mListDoThiCoSan.add(Const.DO_THI_2);
 
         // list toạ độ Point của Đồ thị có sẵn 
-        mListDoThiCoSanCoordinate = new ArrayList<Point[]>(); 
+        mListDoThiCoSanCoordinate = new ArrayList<Point[]>();
         mListDoThiCoSanCoordinate.add(Const.DO_THI_1_COORDINATE);
         mListDoThiCoSanCoordinate.add(Const.DO_THI_2_COORDINATE);
-        
+
         // MaTran 
         mMaTran = new MaTran(
-                Mode.CoHuong, 
+                Mode.CoHuong,
                 mListDoThiCoSan.get(0),
                 mListDoThiCoSanCoordinate.get(0));
 
@@ -454,13 +532,36 @@ public class MainForm extends javax.swing.JFrame
         cmbDoThiCoSan.setActionCommand("SelectDoThi");
         cmbDoThiCoSan.addActionListener(this);
 
+        cmbDiemXuatPhat.setActionCommand("SelectDuongDiMoi");
+        cmbDiemXuatPhat.addActionListener(this);
+
+        cmbDiemCuoi.setActionCommand("SelectDuongDiMoi");
+        cmbDiemCuoi.addActionListener(this);
+
         // Button 
         btnChayMotLan.setActionCommand("ChayMotLan");
         btnChayMotLan.addActionListener(this);
 
-        // Button 
         btnChayTungBuoc.setActionCommand("ChayTungBuoc");
         btnChayTungBuoc.addActionListener(this);
+
+        btnDiChuyen1Diem.setActionCommand("DiChuyen1Diem");
+        btnDiChuyen1Diem.addActionListener(this);
+
+        btnNoi2Diem.setActionCommand("Noi2Diem");
+        btnNoi2Diem.addActionListener(this);
+
+        btnXoaDiem.setActionCommand("XoaDiem");
+        btnXoaDiem.addActionListener(this);
+
+        btnThemDiem.setActionCommand("ThemDiem");
+        btnThemDiem.addActionListener(this);
+
+        btnXoaDuongThang.setActionCommand("XoaDuongThang");
+        btnXoaDuongThang.addActionListener(this);
+
+        btnThayDoiGiaTri.setActionCommand("ThayDoiGiaTri");
+        btnThayDoiGiaTri.addActionListener(this);
     }
 
     @Override
@@ -482,6 +583,9 @@ public class MainForm extends javax.swing.JFrame
                 mPresenter.onSelectedDoThiCoSan();
                 System.out.println("DoThiCoSan");
                 break;
+            case "SelectDuongDiMoi":
+                mPresenter.onSelectedDuongDiMoi();
+                break;
             case "SelectDoThi":
                 mPresenter.onSelectedDoThiCoSanPosition(cmbDoThiCoSan.getSelectedIndex());
                 System.err.println("Index : " + cmbDoThiCoSan.getSelectedIndex());
@@ -494,6 +598,30 @@ public class MainForm extends javax.swing.JFrame
                 mPresenter.onSelectedChayTungBuoc();
                 System.err.println("Chạy Từng bước");
                 break;
+            case "DiChuyen1Diem":
+                mPresenter.onSelectedDiChuyen1Diem();
+                System.err.println("Di chuyển 1 điểm");
+                break;
+            case "Noi2Diem":
+                mPresenter.onSelectedNoi2Diem();
+                System.err.println("Nối 2 điểm");
+                break;
+            case "XoaDiem":
+                mPresenter.onSelectedXoaDiem();
+                System.err.println("Xoá điểm");
+                break;
+            case "ThemDiem":
+                mPresenter.onSelectedThemDiem();
+                System.err.println("Thêm điểm");
+                break;
+            case "XoaDuongThang":
+                mPresenter.onSelectedXoaDuongThang();
+                System.err.println("Xoá đường thẳng");
+                break;
+            case "ThayDoiGiaTri":
+                mPresenter.onSelectedThayDoiGiaTri();
+                System.err.println("Thay đổi giá trị");
+                break;
             default:
                 break;
         }
@@ -501,18 +629,32 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void updateDoThiCoHuong() {
+        // cập nhật ma trận  ( mode ) 
         mMaTran.setMode(Mode.CoHuong);
+        // cập nhật hiển thị bảng giá trị Ma trận 
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
         tblMaTran.setModel(mTableModelMaTran);
+        // xoá hiển thị đường đi trước đó 
+        lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
+        mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
+        tblThuatToan.setModel(mTableModelThuatToan);
+        // vẽ lại đồ thị 
+        mDrawDoThi.drawWithMode(mMaTran.getListPoints(), true);
     }
 
     @Override
     public void updateDoThiVoHuong() {
-        // mode 
+        // cập nhật ma trận  ( mode ) 
         mMaTran.setMode(Mode.VoHuong);
-        // Table Data 
+        // cập nhật hiển thị bảng giá trị Ma trận 
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
         tblMaTran.setModel(mTableModelMaTran);
+        // xoá hiển thị đường đi trước đó 
+        lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
+        mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
+        tblThuatToan.setModel(mTableModelThuatToan);
+        // vẽ lại đồ thị 
+        mDrawDoThi.drawWithMode(mMaTran.getListPoints(), false);
     }
 
     @Override
@@ -529,7 +671,7 @@ public class MainForm extends javax.swing.JFrame
     @Override
     public void updateDoThiCoSan(Mode mode) {
         // MaTran == null 
-        mMaTran = new MaTran(mode, mListDoThiCoSan.get(0),mListDoThiCoSanCoordinate.get(0));
+        mMaTran = new MaTran(mode, mListDoThiCoSan.get(0), mListDoThiCoSanCoordinate.get(0));
 
         // Table Ma Tran
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
@@ -553,10 +695,19 @@ public class MainForm extends javax.swing.JFrame
     }
 
     @Override
+    public void clearViewOfOldRoad() {
+        // xoá hiển thị giá trị của đường đi trước 
+        mDrawDoThi.drawDoThiUnselected();
+        lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
+        mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
+        tblThuatToan.setModel(mTableModelThuatToan);
+    }
+
+    @Override
     public void updateDoThiCoSanPosition(Mode mode, int position) {
         // MaTran == null 
-        mMaTran = new MaTran(mode, mListDoThiCoSan.get(position),mListDoThiCoSanCoordinate.get(position));
-        
+        mMaTran = new MaTran(mode, mListDoThiCoSan.get(position), mListDoThiCoSanCoordinate.get(position));
+
         // vẽ lại đồ thị 
         mDrawDoThi.initShapeData(mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
         mDrawDoThi.repaint();
@@ -596,7 +747,7 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void executeOneTime() {
-        System.out.println("Execute One Time ");
+//        System.out.println("Execute One Time ");
         int soDinh = mMaTran.getListPoints().size();
         int sPoint = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
         int fPoint = Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString());
@@ -639,34 +790,26 @@ public class MainForm extends javax.swing.JFrame
             for (int i = 0; i < listPointMarked.size(); i++) {
                 listDataForTable[step][listPointMarked.get(i) - 1] = "---";
             }
-//            System.out.println("\n ---------- " + startPoint + "  ->  " + finishPoint + " -------------\n");
 //
             for (Entry<Integer, Integer> item2 : item.getListValue().entrySet()) {
                 int pointConnected = item2.getKey();
                 int valueOfPointConnected = item2.getValue();
-//                System.out.println("Điểm kết nối thử : " + pointConnected + " : " + valueOfPointConnected);
-
                 // step > 0 => bước > 1 
                 if (step != 0) {
-
+                    Object[][] listVariables = mMaTran.getListVariable();
                     // những điểm không thể kết nối được 
-                    if (valueOfPointConnected <= beforeValue) {
-//                        System.out.println("MPoint connected : " + (pointConnected - 1));
+                    if ((listVariables[startPoint - 1][pointConnected - 1]).toString().equals("0")) {
                         listDataForTable[step][pointConnected - 1] = "[ @ ," + startPoint + " ]";
-
-                    }
-                    // những điểm có thể kết nối nhưng không phải là điểm được chọn 
-                    if (valueOfPointConnected > beforeValue
-                            && pointConnected != finishPoint) {
-                        listDataForTable[step][pointConnected - 1] = "[ " + valueOfPointConnected
-                                + " , " + startPoint + " ]";
-                    }
-
-                    // Điểm được chọn  
-                    if (valueOfPointConnected > beforeValue
-                            && pointConnected == finishPoint) {
-                        listDataForTable[step][pointConnected - 1] = " *** [ " + valueOfPointConnected
-                                + " , " + startPoint + " ]";
+                    } else {
+                        // những điểm có thể kết nối nhưng không phải là điểm được chọn 
+                        if (pointConnected != finishPoint) {
+                            listDataForTable[step][pointConnected - 1] = "[ " + valueOfPointConnected
+                                    + " , " + startPoint + " ]";
+                        } // Điểm được chọn 
+                        else {
+                            listDataForTable[step][pointConnected - 1] = " *** [ " + valueOfPointConnected
+                                    + " , " + startPoint + " ]";
+                        }
                     }
                 } // step == 0 => bước 1 => kết nối với chính điểm đầu tiên  
                 else {
@@ -687,47 +830,42 @@ public class MainForm extends javax.swing.JFrame
 
         // hiển thị đường đi 
         // K <=> StartPoint ---- V <=> FinishPoint
-        HashMap<Integer, Integer> listRoad = new HashMap<Integer, Integer>();
+//        ArrayList<Pair<Integer, Integer>> listRoads = new ArrayList<Pair<Integer, Integer>>();
+        ArrayList<Pair<Integer, Integer>> listRoadsTemp = new ArrayList<Pair<Integer, Integer>>();
 
-        int finishBefore = sPoint;
-        for (int step = 0; step < stepIndicator; step++) {
-            DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
+        boolean flagDiemCuoi = true;
+        Pair<Integer, Integer> diemCuoiCurrent = new Pair(-1, -1);
+
+        for (int j = stepIndicator - 1; j >= 0; j--) {
+            DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(j);
             int start = item.getStartPoint();
             int finish = item.getFinishPoint();
             int curValue = item.getCurrentValue();
-            // gặp quay lui rẽ nhánh 
-            if (finishBefore != start
-                    && listRoad.size() > 0) {
-
-//                // duyệt các điểm đã đi từ cuối lên đầu 
-//                ArrayList<Integer> listKeysTemp = new ArrayList<Integer>(); 
-//                for(Integer it : listRoad.keySet()){
-//                    listKeysTemp.add(it); 
-//                }
-//                Collections.reverse(listKeysTemp); 
-//               
-//                
-//                // xoá đường đi sai 
-//                for (Integer it : listKeysTemp) {
-//                    int s = it ;
-//                    int f = listRoad.get(s);
-//                    if (s != start || f != finish) {
-//                        listRoad.remove(s);
-//                    } else {
-//                        break;
-//                    }
-//                }
+            if (flagDiemCuoi != true) {
+                if (finish == diemCuoiCurrent.getKey()) {
+                    diemCuoiCurrent = new Pair(start, finish);
+                    listRoadsTemp.add(new Pair(start, finish));
+                }
+            } else {
+                diemCuoiCurrent = new Pair(start, finish);
+                listRoadsTemp.add(new Pair(start, finish));
+                flagDiemCuoi = false;
             }
-            listRoad.put(start, finish);
-            finishBefore = finish;
         }
+        ArrayList<Integer> listRoadsFinal = new ArrayList<Integer>();
 
         StringBuilder result = new StringBuilder();
         result.append("Đường đi từ " + sPoint + " -> " + currentFinishPoint + " : " + sPoint + " -> ");
-        for (Entry<Integer, Integer> temp : listRoad.entrySet()) {
-            result.append(temp.getValue() + " -> ");
-        }
 
+        for (int i = listRoadsTemp.size() - 1; i >= 0; i--) {
+            listRoadsFinal.add(listRoadsTemp.get(i).getValue());
+            System.out.println(listRoadsTemp.get(i).getValue() + " -> ");
+        }
+//        listRoadsFinal.remove(0);
+
+        for (int i = 1; i < listRoadsFinal.size(); i++) {
+            result.append(listRoadsFinal.get(i) + " -> ");
+        }
         result.replace(result.length() - 3, result.length(), "");
 
         // kiểm tra có phải là chạy 1 lần || đi đến bước cuối cùng hay ko 
@@ -735,17 +873,22 @@ public class MainForm extends javax.swing.JFrame
             // không có đường 
             if (currentFinishPoint != fPoint) {
                 lblBieuDienThuatToan.setText("Không có đường đi từ điểm " + sPoint + " -> " + fPoint);
+                mDrawDoThi.drawDoThiUnselected();
                 return;
             }
         }
 
-        // kiểm tra xem có đường đi hay ko 
-        result.append("\t\t\t\nTổng giá trị đường đi : " + currentLength);
+        // xuất đường đi  
+        result.append(" --- Tổng giá trị đường đi : " + currentLength);
         lblBieuDienThuatToan.setText(result.toString());
+
+        // vẽ đường đi lên đồ thị 
+        mDrawDoThi.drawRoad(listRoadsFinal);
     }
 
     @Override
-    public void executePerStep(int stepIndicator) {
+    public void executePerStep(int stepIndicator
+    ) {
         int soDinh = mMaTran.getListPoints().size();
         int sPoint = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
         int fPoint = Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString());
@@ -756,7 +899,100 @@ public class MainForm extends javax.swing.JFrame
                     soDinh,
                     sPoint,
                     fPoint);
+            mDrawDoThi.drawDoThiUnselected();
         }
         showDataWithStepIndicator(sPoint, fPoint, stepIndicator, mListDataOfTwoPointForOneStep.size(), soDinh);
+    }
+
+    @Override
+    public void setFlagDiChuyen1Diem() {
+        mDrawDoThi.setFlagDiChuyen1Diem();
+    }
+
+    @Override
+    public void setFlagNoi2Diem() {
+        mDrawDoThi.setFlagNoi2Diem();
+    }
+
+    @Override
+    public void setFlagXoaDiem() {
+        mDrawDoThi.setFlagXoaDiem();
+    }
+
+    @Override
+    public void setFlagThemDiem() {
+        mDrawDoThi.setFlagThemDiem();
+    }
+
+    @Override
+    public void setFlagXoaDuongThang() {
+        mDrawDoThi.setFlagXoaDuongThang();
+    }
+
+    @Override
+    public void setFlagThayDoiGiaTri() {
+        mDrawDoThi.setFlagThayDoiGiaTri();
+    }
+
+    @Override
+    public void callBackUpdatedFromDrawDoThi(DrawDoThi.Flag flagUpdate, ArrayList<ShapePoint> listShapePoints,
+            ArrayList<ShapeLine> listShapeLines
+    ) {
+        mPresenter.onCallBackUpdatedFromDrawDoThi(flagUpdate, listShapePoints, listShapeLines);
+    }
+
+    @Override
+    public void updateViewAndDataWithActionDiChuyen1Diem(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines
+    ) {
+        ArrayList<MPoint> listPoints = MaTranUtils.convertListShapeToListPoint(listShapePoints, listShapeLines);
+        // cập nhật lại ma trận  
+        mMaTran.updateMaTranWithListPoints(listPoints);
+    }
+
+    @Override
+    public void updateViewAndDataWithActionNoi2Diem(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines
+    ) {
+        ArrayList<MPoint> listPoints = MaTranUtils.convertListShapeToListPoint(listShapePoints, listShapeLines);
+        // cập nhật lại ma trận  
+        mMaTran.updateMaTranWithListPoints(listPoints);
+        // cập nhật dữ liệu trên table Ma trận 
+        mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+        tblMaTran.setModel(mTableModelMaTran);
+
+        // xoá hiển thị kết quả đường đi trước đó
+        lblBieuDienThuatToan.setText("Hiển thị đường đi và kết quả thuật toán");
+
+        mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
+        tblThuatToan.setModel(mTableModelThuatToan);
+    }
+
+    @Override
+    public void updateViewAndDataWithActionXoaDiem(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines
+    ) {
+        updateViewAndDataWithActionNoi2Diem(listShapePoints, listShapeLines);
+
+        // cập nhật combobox đường đi 
+        cmbDiemXuatPhat.removeAllItems();
+        cmbDiemCuoi.removeAllItems();
+        for (int i = 0; i < mMaTran.getListPoints().size(); i++) {
+            int point = mMaTran.getListPoints().get(i).getIndicator();
+            cmbDiemXuatPhat.addItem("" + point);
+            cmbDiemCuoi.addItem("" + point);
+        }
+    }
+
+    @Override
+    public void updateViewAndDataWithActionThemDiem(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
+        updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
+    }
+
+    @Override
+    public void updateViewAndDataWithActionXoaDuongThang(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
+        updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
+    }
+
+    @Override
+    public void updateViewAndDataWithActionThayDoiGiaTri(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
+        updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
     }
 }

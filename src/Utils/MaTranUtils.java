@@ -91,4 +91,39 @@ public class MaTranUtils {
         }
         return list;
     }
+
+    public static ArrayList<MPoint> convertListShapeToListPoint(ArrayList<ShapePoint> listShapePoints,
+            ArrayList<ShapeLine> listShapeLines) {
+        ArrayList<MPoint> listPoints = new ArrayList<MPoint>();
+
+        // convert thành MPoint
+        for (ShapePoint sp : listShapePoints) {
+            int indicator = sp.getIndicator();
+            Point originPoint = sp.getOriginPoint();
+            ArrayList<Line> listLines = new ArrayList<Line>();
+
+            // convert thành Line
+            // Khởi tạo mặc định tất cả line có value = 0 
+            for (int i = 0; i < listShapePoints.size(); i++) {
+                int finishIndicator = listShapePoints.get(i).getIndicator();
+                Line line = new Line(indicator, finishIndicator, 0);
+                listLines.add(line);
+            }
+
+            // Tìm những line có value và gán lại cho nó đúng value 
+            for (ShapeLine sl : listShapeLines) {
+                for (Line line : listLines) {
+                    if (sl.getStartIndicator() == line.getStartIndicator()
+                            && sl.getFinishIndicator() == line.getEndIndicator()) {
+                         line.setValue(sl.getValue());
+                    }
+                }
+            }
+
+            MPoint mPoint = new MPoint(indicator, originPoint, listLines);
+            listPoints.add(mPoint);
+        }
+
+        return listPoints;
+    }
 }
