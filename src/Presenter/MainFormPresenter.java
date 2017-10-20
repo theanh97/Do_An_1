@@ -131,6 +131,6 @@ public class MainFormPresenter implements IMainFormPresenter {
             mView.updateViewAndDataWithActionXoaDuongThang(listShapePoints, listShapeLines);
         } else if (flagUpdate == Flag.THAY_DOI_GIA_TRI) {
             mView.updateViewAndDataWithActionThayDoiGiaTri(listShapePoints, listShapeLines);
-        } 
+        }
     }
 }

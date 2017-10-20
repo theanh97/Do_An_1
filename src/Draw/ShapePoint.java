@@ -7,6 +7,7 @@ package Draw;
 
 import Utils.Const;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
@@ -41,7 +42,8 @@ public class ShapePoint implements MShape {
         g.setColor(color);
         shape = new Ellipse2D.Double(originPoint.x, originPoint.y, Const.POINT_RADIUS, Const.POINT_RADIUS);
         g.fill(shape);
-
+        g.setColor(color);
+        g.setFont(new Font("default", Font.BOLD, 19));
         // draw indicator 
         g.setColor(Const.COLOR_POINT_INDICATOR);
         g.drawString("" + getIndicator(),

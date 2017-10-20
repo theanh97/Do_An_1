@@ -56,9 +56,9 @@ public class MainForm extends javax.swing.JFrame
         implements IMainForm,
         ActionListener,
         CallBackToMainForm {
-    
+
     MainFormPresenter mPresenter;
-    
+
     private MaTran mMaTran;
     private DefaultTableModel mTableModelMaTran;
     private DefaultTableModel mTableModelThuatToan;
@@ -75,15 +75,15 @@ public class MainForm extends javax.swing.JFrame
         mPresenter = new MainFormPresenter(this);
         setEventListener();
         initData();
-        
+
         mDrawDoThi = new DrawDoThi(this, mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
         mDrawDoThi.setBounds(334, 27, 884, 384);
         add(mDrawDoThi);
-        
+
         prepareUI();
-        
+
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -398,7 +398,7 @@ public class MainForm extends javax.swing.JFrame
     private void rdbTuVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbTuVeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rdbTuVeActionPerformed
-    
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -492,7 +492,7 @@ public class MainForm extends javax.swing.JFrame
         mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
         tblThuatToan.setModel(mTableModelThuatToan);
     }
-    
+
     @Override
     public void initData() {
         // list Do Thi Co San
@@ -510,60 +510,60 @@ public class MainForm extends javax.swing.JFrame
                 Mode.CoHuong,
                 mListDoThiCoSan.get(0),
                 mListDoThiCoSanCoordinate.get(0));
-        
+
     }
-    
+
     @Override
     public void setEventListener() {
         // Radion button 
         rdbCoHuong.setActionCommand("CoHuong");
         rdbCoHuong.addActionListener(this);
-        
+
         rdbVoHuong.setActionCommand("VoHuong");
         rdbVoHuong.addActionListener(this);
-        
+
         rdbTuVe.setActionCommand("TuVe");
         rdbTuVe.addActionListener(this);
-        
+
         rdbDoThiCoSan.setActionCommand("DoThiCoSan");
         rdbDoThiCoSan.addActionListener(this);
 
         // Combobox 
         cmbDoThiCoSan.setActionCommand("SelectDoThi");
         cmbDoThiCoSan.addActionListener(this);
-        
+
         cmbDiemXuatPhat.setActionCommand("SelectDuongDiMoi");
         cmbDiemXuatPhat.addActionListener(this);
-        
+
         cmbDiemCuoi.setActionCommand("SelectDuongDiMoi");
         cmbDiemCuoi.addActionListener(this);
 
         // Button 
         btnChayMotLan.setActionCommand("ChayMotLan");
         btnChayMotLan.addActionListener(this);
-        
+
         btnChayTungBuoc.setActionCommand("ChayTungBuoc");
         btnChayTungBuoc.addActionListener(this);
-        
+
         btnDiChuyen1Diem.setActionCommand("DiChuyen1Diem");
         btnDiChuyen1Diem.addActionListener(this);
-        
+
         btnNoi2Diem.setActionCommand("Noi2Diem");
         btnNoi2Diem.addActionListener(this);
-        
+
         btnXoaDiem.setActionCommand("XoaDiem");
         btnXoaDiem.addActionListener(this);
-        
+
         btnThemDiem.setActionCommand("ThemDiem");
         btnThemDiem.addActionListener(this);
-        
+
         btnXoaDuongThang.setActionCommand("XoaDuongThang");
         btnXoaDuongThang.addActionListener(this);
-        
+
         btnThayDoiGiaTri.setActionCommand("ThayDoiGiaTri");
         btnThayDoiGiaTri.addActionListener(this);
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -626,7 +626,7 @@ public class MainForm extends javax.swing.JFrame
                 break;
         }
     }
-    
+
     @Override
     public void updateDoThiCoHuong() {
         // cập nhật ma trận  ( mode ) 
@@ -641,7 +641,7 @@ public class MainForm extends javax.swing.JFrame
         // vẽ lại đồ thị 
         mDrawDoThi.drawWithMode(mMaTran.getListPoints(), true);
     }
-    
+
     @Override
     public void updateDoThiVoHuong() {
         // cập nhật ma trận  ( mode ) 
@@ -656,22 +656,70 @@ public class MainForm extends javax.swing.JFrame
         // vẽ lại đồ thị 
         mDrawDoThi.drawWithMode(mMaTran.getListPoints(), false);
     }
-    
+
     @Override
     public void updateDoThiTuVe() {
-        // MaTran = null 
         // disable combobox DoThiCoSan
         cmbDoThiCoSan.setSelectedIndex(0);
         cmbDoThiCoSan.setEnabled(false);
-        // Table data = null 
+
+        // clear MaTran 
+        mMaTran.clearMaTran();
+
+        // clear table MaTrans
         mTableModelMaTran = new DefaultTableModel(new Object[][]{}, new Object[]{});
         tblMaTran.setModel(mTableModelMaTran);
+
+        // clear table thuật toán 
+        mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, new Object[]{});
+        tblThuatToan.setModel(mTableModelThuatToan);
+
+        // clear hiển thị đường đi của thuật toán 
+        lblBieuDienThuatToan.setText("Hiển thị giá trị và đường đi của thuật toán");
+
+        // xoá hiển thị đồ thị trước đó 
+        mDrawDoThi.drawWithMode(mMaTran.getListPoints(), (mMaTran.isMode() == Mode.CoHuong));
+
+        // clear trong combobox đường đi 
+        cmbDiemCuoi.removeAllItems();
+        cmbDiemCuoi.addItem("");
+        cmbDiemXuatPhat.removeAllItems();
+        cmbDiemXuatPhat.addItem("");
     }
-    
+
     @Override
     public void updateDoThiCoSan(Mode mode) {
+//        // MaTran == null 
+//        mMaTran = new MaTran(mode, mListDoThiCoSan.get(0), mListDoThiCoSanCoordinate.get(0));
+//
+//        // Table Ma Tran
+//        mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+//        tblMaTran.setModel(mTableModelMaTran);
+//
+//        // Table Thuat Toan
+//        mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
+//        tblThuatToan.setModel(mTableModelThuatToan);
+//
+//        // udpate MPoint of combobox ( Start - End ) 
+//        cmbDiemXuatPhat.removeAllItems();
+//        cmbDiemCuoi.removeAllItems();
+//        for (int i = 0; i < mMaTran.getListPoints().size(); i++) {
+//            int point = mMaTran.getListPoints().get(i).getIndicator();
+//            cmbDiemXuatPhat.addItem("" + point);
+//            cmbDiemCuoi.addItem("" + point);
+//        }
+//
+        // enable combobox DoThiCoSan
+        cmbDoThiCoSan.setEnabled(true);
+        
+        mMaTran.clearMaTran();
+
         // MaTran == null 
         mMaTran = new MaTran(mode, mListDoThiCoSan.get(0), mListDoThiCoSanCoordinate.get(0));
+
+        // vẽ lại đồ thị 
+        mDrawDoThi.initShapeData(mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
+        mDrawDoThi.repaint();
 
         // Table Ma Tran
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
@@ -689,11 +737,8 @@ public class MainForm extends javax.swing.JFrame
             cmbDiemXuatPhat.addItem("" + point);
             cmbDiemCuoi.addItem("" + point);
         }
-
-        // disable combobox DoThiCoSan
-        cmbDoThiCoSan.setEnabled(true);
     }
-    
+
     @Override
     public void clearViewOfOldRoad() {
         // xoá hiển thị giá trị của đường đi trước 
@@ -702,7 +747,7 @@ public class MainForm extends javax.swing.JFrame
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
         tblThuatToan.setModel(mTableModelThuatToan);
     }
-    
+
     @Override
     public void updateDoThiCoSanPosition(Mode mode, int position) {
         // MaTran == null 
@@ -729,7 +774,7 @@ public class MainForm extends javax.swing.JFrame
             cmbDiemCuoi.addItem("" + point);
         }
     }
-    
+
     @Override
     public boolean checkValidBeforeExecute() {
         if (mMaTran.getListPoints() == null
@@ -737,29 +782,19 @@ public class MainForm extends javax.swing.JFrame
             JOptionPane.showMessageDialog(this, "Vui lòng chọn đồ thị hợp lệ !!!");
             return false;
         }
-        
+
         if (cmbDiemXuatPhat.getSelectedIndex() == cmbDiemCuoi.getSelectedIndex()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn điểm xuất phát và điểm kết thúc khác nhau !!!");
             return false;
         }
         return true;
     }
-    
+
     @Override
     public void executeOneTime() {
-//        System.out.println("Execute One Time ");
         int soDinh = mMaTran.getListPoints().size();
         int sPoint = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
         int fPoint = Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString());
-        // lấy list DataOfTwoPointForOneStep 
-//        mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(
-//                MaTranUtils.convertListObjectToListInt(mMaTran.getListVariable()),
-//                soDinh,
-//                sPoint,
-//                fPoint);
-//
-//        showDataWithStepIndicator(sPoint, fPoint,
-//                mListDataOfTwoPointForOneStep.size(), mListDataOfTwoPointForOneStep.size(), soDinh);
 
         int startPosition = getPointPositionFromIndicator(sPoint);
         int finishPosition = getPointPositionFromIndicator(fPoint);
@@ -768,11 +803,11 @@ public class MainForm extends javax.swing.JFrame
                 soDinh,
                 startPosition,
                 finishPosition);
-        
+
         showDataWithStepIndicator(startPosition, finishPosition,
                 mListDataOfTwoPointForOneStep.size(), mListDataOfTwoPointForOneStep.size(), soDinh);
     }
-    
+
     @Override
     public void showDataWithStepIndicator(int sPoint, int fPoint,
             int stepIndicator, int maxStep, int soDinh) {
@@ -786,13 +821,13 @@ public class MainForm extends javax.swing.JFrame
         // lưu vết Điểm cuối && giá trị để đi đến điểm cuối
         int currentLength = 0;
         int currentFinishPoint = -1;
-        
+
         for (int step = 0; step < stepIndicator; step++) {
             DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
             int finishPoint = item.getFinishPoint();
             int startPoint = item.getStartPoint();
             ArrayList<Integer> listPointMarked = item.getListPointMarked();
-            
+
             currentLength = item.getCurrentValue();
             currentFinishPoint = item.getFinishPoint();
 
@@ -842,10 +877,10 @@ public class MainForm extends javax.swing.JFrame
         // K <=> StartPoint ---- V <=> FinishPoint
 //        ArrayList<Pair<Integer, Integer>> listRoads = new ArrayList<Pair<Integer, Integer>>();
         ArrayList<Pair<Integer, Integer>> listRoadsTemp = new ArrayList<Pair<Integer, Integer>>();
-        
+
         boolean flagDiemCuoi = true;
         Pair<Integer, Integer> diemCuoiCurrent = new Pair(-1, -1);
-        
+
         for (int j = stepIndicator - 1; j >= 0; j--) {
             DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(j);
             int start = item.getStartPoint();
@@ -863,17 +898,17 @@ public class MainForm extends javax.swing.JFrame
             }
         }
         ArrayList<Integer> listRoadsFinal = new ArrayList<Integer>();
-        
+
         StringBuilder result = new StringBuilder();
         result.append("Đường đi từ " + getPointIndicatorFromPosition(sPoint) + " -> "
                 + getPointIndicatorFromPosition(currentFinishPoint) + " : "
                 + getPointIndicatorFromPosition(sPoint) + " -> ");
-        
+
         for (int i = listRoadsTemp.size() - 1; i >= 0; i--) {
             listRoadsFinal.add(getPointIndicatorFromPosition(listRoadsTemp.get(i).getValue()));
             System.out.println(getPointIndicatorFromPosition(listRoadsTemp.get(i).getValue()) + " -> ");
         }
-        
+
         for (int i = 1; i < listRoadsFinal.size(); i++) {
             result.append(listRoadsFinal.get(i) + " -> ");
         }
@@ -884,8 +919,8 @@ public class MainForm extends javax.swing.JFrame
             // không có đường 
             if (currentFinishPoint != fPoint) {
                 lblBieuDienThuatToan.setText("Không có đường đi từ điểm "
-                        + getPointIndicatorFromPosition(sPoint) + " -> " + 
-                        getPointIndicatorFromPosition(fPoint));
+                        + getPointIndicatorFromPosition(sPoint) + " -> "
+                        + getPointIndicatorFromPosition(fPoint));
                 mDrawDoThi.drawDoThiUnselected();
                 return;
             }
@@ -898,12 +933,12 @@ public class MainForm extends javax.swing.JFrame
         // vẽ đường đi lên đồ thị 
         mDrawDoThi.drawRoad(listRoadsFinal);
     }
-    
+
     int getPointIndicatorFromPosition(int pointPosition) {
         System.out.println("Point position : " + pointPosition);
         return mMaTran.getListPoints().get(pointPosition).getIndicator();
     }
-    
+
     int getPointPositionFromIndicator(int pointIndicator) {
         Object[] listIndicator = mMaTran.getColumnsName();
         for (int i = 0; i < listIndicator.length; i++) {
@@ -914,7 +949,7 @@ public class MainForm extends javax.swing.JFrame
         }
         return -1;
     }
-    
+
     @Override
     public void executePerStep(int stepIndicator
     ) {
@@ -925,7 +960,7 @@ public class MainForm extends javax.swing.JFrame
 
         int startPosition = getPointPositionFromIndicator(sPoint);
         int finishPosition = getPointPositionFromIndicator(fPoint);
-        
+
         if (stepIndicator == 1) {
             mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(
                     MaTranUtils.convertListObjectToListInt(mMaTran.getListVariable()),
@@ -936,44 +971,44 @@ public class MainForm extends javax.swing.JFrame
         }
         showDataWithStepIndicator(startPosition, finishPosition, stepIndicator, mListDataOfTwoPointForOneStep.size(), soDinh);
     }
-    
+
     @Override
     public void setFlagDiChuyen1Diem() {
         mDrawDoThi.setFlagDiChuyen1Diem();
     }
-    
+
     @Override
     public void setFlagNoi2Diem() {
         mDrawDoThi.setFlagNoi2Diem();
     }
-    
+
     @Override
     public void setFlagXoaDiem() {
         mDrawDoThi.setFlagXoaDiem();
     }
-    
+
     @Override
     public void setFlagThemDiem() {
         mDrawDoThi.setFlagThemDiem();
     }
-    
+
     @Override
     public void setFlagXoaDuongThang() {
         mDrawDoThi.setFlagXoaDuongThang();
     }
-    
+
     @Override
     public void setFlagThayDoiGiaTri() {
         mDrawDoThi.setFlagThayDoiGiaTri();
     }
-    
+
     @Override
     public void callBackUpdatedFromDrawDoThi(DrawDoThi.Flag flagUpdate, ArrayList<ShapePoint> listShapePoints,
             ArrayList<ShapeLine> listShapeLines
     ) {
         mPresenter.onCallBackUpdatedFromDrawDoThi(flagUpdate, listShapePoints, listShapeLines);
     }
-    
+
     @Override
     public void updateViewAndDataWithActionDiChuyen1Diem(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines
     ) {
@@ -981,7 +1016,7 @@ public class MainForm extends javax.swing.JFrame
         // cập nhật lại ma trận  
         mMaTran.updateMaTranWithListPoints(listPoints);
     }
-    
+
     @Override
     public void updateViewAndDataWithActionNoi2Diem(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines
     ) {
@@ -994,11 +1029,11 @@ public class MainForm extends javax.swing.JFrame
 
         // xoá hiển thị kết quả đường đi trước đó
         lblBieuDienThuatToan.setText("Hiển thị đường đi và kết quả thuật toán");
-        
+
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
         tblThuatToan.setModel(mTableModelThuatToan);
     }
-    
+
     @Override
     public void updateViewAndDataWithActionXoaDiem(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines
     ) {
@@ -1013,17 +1048,17 @@ public class MainForm extends javax.swing.JFrame
             cmbDiemCuoi.addItem("" + point);
         }
     }
-    
+
     @Override
     public void updateViewAndDataWithActionThemDiem(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
         updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
     }
-    
+
     @Override
     public void updateViewAndDataWithActionXoaDuongThang(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
         updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
     }
-    
+
     @Override
     public void updateViewAndDataWithActionThayDoiGiaTri(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
         updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
