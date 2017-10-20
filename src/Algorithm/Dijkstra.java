@@ -192,8 +192,6 @@ public class Dijkstra {
     // finish -> chỉ số của finishPoint trong mảng  
     public static ArrayList<DataOfTwoPointForOneStep> dijkstra(int[][] doThi, int soDinh, int start, int finish) {
         ArrayList<DataOfTwoPointForOneStep> listDataOfTwoPointsForOneStep = new ArrayList<DataOfTwoPointForOneStep>();
-        boolean isSuccess = true;
-        int firstStart = start;
         int[] back = new int[100]; // Lưu đỉnh cha
         int[] weight = new int[100]; // Lưu trọng số 
         int[] mark = new int[100]; // đánh dấu đỉnh 
@@ -293,7 +291,7 @@ public class Dijkstra {
                 }
             }
 
-            System.out.println("\n------ Điểm được chọn : ( " + (newStartPoint) + " , " + (connect) + " ) ");
+//            System.out.println("\n------ Điểm được chọn : ( " + (newStartPoint) + " , " + (connect) + " ) ");
 
             // thêm các vị trí các đỉnh đi qua vào listPointMarked của DataOfTwoPointForOneStep
             for (int i = 0; i < soDinh; i++) {
@@ -307,9 +305,9 @@ public class Dijkstra {
             if (connect != -1) {
                 currentValue = weight[connect];
                 mark[connect] = 1;
-            }else {
-                newStartPoint+=1;
-                finishPoint+=1; 
+            } else {
+//                newStartPoint+=1;
+                finishPoint += 1;
             }
 
             // tạo data và add vào list 
@@ -318,16 +316,11 @@ public class Dijkstra {
             listDataOfTwoPointsForOneStep.add(dotpfos);
         } while (connect != -1 && start != finish);
 
-        // nếu có đường đi 
-        if (isSuccess == true) {
-            System.out.print(("\nĐường đi cuối cùng : " + (firstStart + 1)) + " ->");
+//        System.out.print(("\nĐường đi cuối cùng : " + (firstStart + 1)) + " ->");
 //            printPath(firstStart, finish, back);
-            System.out.println("\n" + weight[finish] + "\n");
-            return listDataOfTwoPointsForOneStep;
-        } // nếu ko có đường đi 
-        else {
-            return null;
-        }
+//        System.out.println("\n" + weight[finish] + "\n");
+        return listDataOfTwoPointsForOneStep;
+
     }
 
     public static void printPath(int start, int finish, int back[]) {

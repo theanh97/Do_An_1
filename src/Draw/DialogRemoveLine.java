@@ -105,7 +105,7 @@ public class DialogRemoveLine extends JDialog {
     }
 
     void configForDialog() {
-        setSize(230, 120);
+        setSize(280, 120);
         setLocationRelativeTo(null);
         getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
     }

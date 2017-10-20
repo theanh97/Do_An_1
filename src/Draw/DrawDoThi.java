@@ -386,7 +386,7 @@ public class DrawDoThi extends JPanel
                     mShapeLineConnectingPoint.getOriginPoint(),
                     mShapeLineConnectingPoint.getFinishPoint(),
                     value,
-                    true,
+                    isCoHuong,
                     false,
                     mShapeLineConnectingPoint.getStartIndicator(),
                     mShapeLineConnectingPoint.getFinishIndicator());

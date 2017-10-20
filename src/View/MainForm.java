@@ -689,29 +689,9 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void updateDoThiCoSan(Mode mode) {
-//        // MaTran == null 
-//        mMaTran = new MaTran(mode, mListDoThiCoSan.get(0), mListDoThiCoSanCoordinate.get(0));
-//
-//        // Table Ma Tran
-//        mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
-//        tblMaTran.setModel(mTableModelMaTran);
-//
-//        // Table Thuat Toan
-//        mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
-//        tblThuatToan.setModel(mTableModelThuatToan);
-//
-//        // udpate MPoint of combobox ( Start - End ) 
-//        cmbDiemXuatPhat.removeAllItems();
-//        cmbDiemCuoi.removeAllItems();
-//        for (int i = 0; i < mMaTran.getListPoints().size(); i++) {
-//            int point = mMaTran.getListPoints().get(i).getIndicator();
-//            cmbDiemXuatPhat.addItem("" + point);
-//            cmbDiemCuoi.addItem("" + point);
-//        }
-//
         // enable combobox DoThiCoSan
         cmbDoThiCoSan.setEnabled(true);
-        
+
         mMaTran.clearMaTran();
 
         // MaTran == null 
@@ -821,6 +801,7 @@ public class MainForm extends javax.swing.JFrame
         // lưu vết Điểm cuối && giá trị để đi đến điểm cuối
         int currentLength = 0;
         int currentFinishPoint = -1;
+        boolean flagSuccess = false;
 
         for (int step = 0; step < stepIndicator; step++) {
             DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
@@ -867,11 +848,31 @@ public class MainForm extends javax.swing.JFrame
                     }
                 }
             }
+
+            // kiểm tra xem bước cuối có đường đi hay không 
+            if (step == maxStep - 1) {
+                int valueOfFinalStep = Integer.parseInt(mMaTran.getListVariable()[startPoint][finishPoint].toString());
+                if(valueOfFinalStep != 0 )
+                    flagSuccess = true ;
+            }
         }
 
         // tạo TableModel 
         mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
         tblThuatToan.setModel(mTableModelThuatToan);
+
+        // kiểm tra có phải là chạy 1 lần || đi đến bước cuối cùng hay ko 
+        if (stepIndicator == maxStep) {
+            // không có đường 
+            if (currentFinishPoint != fPoint 
+                    || flagSuccess == false) {
+                lblBieuDienThuatToan.setText("Không có đường đi từ điểm "
+                        + getPointIndicatorFromPosition(sPoint) + " -> "
+                        + getPointIndicatorFromPosition(fPoint));
+                mDrawDoThi.drawDoThiUnselected();
+                return;
+            }
+        }
 
         // hiển thị đường đi 
         // K <=> StartPoint ---- V <=> FinishPoint
@@ -913,18 +914,6 @@ public class MainForm extends javax.swing.JFrame
             result.append(listRoadsFinal.get(i) + " -> ");
         }
         result.replace(result.length() - 3, result.length(), "");
-
-        // kiểm tra có phải là chạy 1 lần || đi đến bước cuối cùng hay ko 
-        if (stepIndicator == maxStep) {
-            // không có đường 
-            if (currentFinishPoint != fPoint) {
-                lblBieuDienThuatToan.setText("Không có đường đi từ điểm "
-                        + getPointIndicatorFromPosition(sPoint) + " -> "
-                        + getPointIndicatorFromPosition(fPoint));
-                mDrawDoThi.drawDoThiUnselected();
-                return;
-            }
-        }
 
         // xuất đường đi  
         result.append(" --- Tổng giá trị đường đi : " + currentLength);

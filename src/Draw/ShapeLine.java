@@ -84,6 +84,7 @@ public class ShapeLine implements MShape {
             }
         }
 
+        // draw shape 
         Polygon polygon = new Polygon();
         if (Math.abs(y22 - y11) > 50) {
             polygon.addPoint(x11 - 14, y11);
@@ -103,17 +104,10 @@ public class ShapeLine implements MShape {
         g2d.setColor(Color.WHITE);
         g2d.draw(getShape());
 
+        // draw line
         g2d.setColor(color);
-
         g2d.drawLine(x11, y11, x22, y22);
 
-//        if (x11 < x22) {
-//            x1 = x11;
-//            y1 = y11;
-//            x2 = Math.abs(x22 - x11) / 3 + Math.min(x22, x11);
-//            int ch = (int) Math.sqrt(Math.pow((Math.abs(x22 - x11)), 2) + Math.pow((Math.abs(y22 - y11)), 2));
-//            y2 = Math.min(y22, y11) + ch / 3;
-//        }
         // draw triangle 
         if (isCoHuong) {
             int dx = x2 - x1, dy = y2 - y1;

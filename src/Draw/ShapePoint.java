@@ -46,9 +46,15 @@ public class ShapePoint implements MShape {
         g.setFont(new Font("default", Font.BOLD, 19));
         // draw indicator 
         g.setColor(Const.COLOR_POINT_INDICATOR);
-        g.drawString("" + getIndicator(),
-                originPoint.x + Const.X_POINT_INDICATOR,
-                originPoint.y + Const.Y_POINT_INDICATOR);
+        if (getIndicator() > 9) {
+            g.drawString("" + getIndicator(),
+                    originPoint.x + Const.X_POINT_INDICATOR - 6,
+                    originPoint.y + Const.Y_POINT_INDICATOR);
+        } else {
+            g.drawString("" + getIndicator(),
+                    originPoint.x + Const.X_POINT_INDICATOR,
+                    originPoint.y + Const.Y_POINT_INDICATOR);
+        }
     }
 
     @Override
