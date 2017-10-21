@@ -6,6 +6,7 @@
 package Draw;
 
 import Utils.Const;
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -101,10 +102,19 @@ public class ShapeLine implements MShape {
         }
 
         setShape(polygon);
+
+        AlphaComposite alcom = AlphaComposite.getInstance(
+                AlphaComposite.SRC_OVER, 0.0f);
+        g2d.setComposite(alcom);
+
         g2d.setColor(Color.WHITE);
         g2d.draw(getShape());
 
         // draw line
+        AlphaComposite alcom1 = AlphaComposite.getInstance(
+                AlphaComposite.SRC_OVER, 1.0f);
+        g2d.setComposite(alcom1);
+
         g2d.setColor(color);
         g2d.drawLine(x11, y11, x22, y22);
 
