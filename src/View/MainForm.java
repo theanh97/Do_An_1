@@ -77,7 +77,7 @@ public class MainForm extends javax.swing.JFrame
         initData();
 
         mDrawDoThi = new DrawDoThi(this, mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
-        mDrawDoThi.setBounds(334, 27, 884, 384);
+        mDrawDoThi.setBounds(334, 27, 860, 384);
         add(mDrawDoThi);
 
         prepareUI();
