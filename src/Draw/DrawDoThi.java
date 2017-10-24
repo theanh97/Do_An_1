@@ -277,11 +277,6 @@ public class DrawDoThi extends JPanel
         }
     }
 
-    public void addNewPoint(Point p, int indicator) {
-//        ShapePoint sp = new ShapePoint(p, indicator, true);
-//        mListShapePoints.add(sp);
-//        repaint();
-    }
 
     public void drawRoad(ArrayList<Integer> road) {
         // xoá vết các đường đi trước 
@@ -323,7 +318,6 @@ public class DrawDoThi extends JPanel
             flag++;
         }
 
-        System.out.println("Repaint");
         repaint();
     }
 

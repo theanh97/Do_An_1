@@ -14,6 +14,25 @@ import java.util.HashMap;
  */
 public class DataOfTwoPointForOneStep {
 
+    
+    private int startPoint;
+    private int finishPoint;
+    private HashMap<Integer, Integer> listValue;
+    private int beforeValue; // tổng giá trị lưu trước đó
+    private int currentValue; // tổng giá trị lưu hiện tại
+    private ArrayList<Integer> listPointMarked; // các điểm đã đánh dấu đi qua 
+
+    public DataOfTwoPointForOneStep(int startPoint, int finishPoint,
+            HashMap<Integer, Integer> listValue, int beforeValue,
+            int currentValue , ArrayList<Integer> listPointMarked) {
+        this.startPoint = startPoint;
+        this.finishPoint = finishPoint;
+        this.listValue = listValue;
+        this.beforeValue = beforeValue;
+        this.currentValue = currentValue;
+        this.listPointMarked = listPointMarked;
+    }
+    
     /**
      * @return the listPointMarked
      */
@@ -98,22 +117,5 @@ public class DataOfTwoPointForOneStep {
         this.listValue = listValue;
     }
 
-    private int startPoint;
-    private int finishPoint;
-    private HashMap<Integer, Integer> listValue;
-    private int beforeValue; // tổng giá trị lưu trước đó
-    private int currentValue; // tổng giá trị lưu hiện tại
-    private ArrayList<Integer> listPointMarked; // các điểm đã đánh dấu đi qua 
-
-    public DataOfTwoPointForOneStep(int startPoint, int finishPoint,
-            HashMap<Integer, Integer> listValue, int beforeValue,
-            int currentValue , ArrayList<Integer> listPointMarked) {
-        this.startPoint = startPoint;
-        this.finishPoint = finishPoint;
-        this.listValue = listValue;
-        this.beforeValue = beforeValue;
-        this.currentValue = currentValue;
-        this.listPointMarked = listPointMarked;
-    }
 
 }
