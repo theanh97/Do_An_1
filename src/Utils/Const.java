@@ -57,6 +57,9 @@ public class Const {
         new Point(500,150),
     };
      
+     // DIMENSION 
+     public static int HEIGHT_OF_TABLE_MATRAN = 306;
+     
      // Draw 
      public static Color COLOR_POINT_NORMAL = Color.BLUE;
      public static Color COLOR_LINE_NORMAL = Color.BLUE;

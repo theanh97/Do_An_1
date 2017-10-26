@@ -11,6 +11,7 @@ import Draw.CallBackToMainForm;
 import Draw.DrawDoThi;
 import Draw.ShapeLine;
 import Draw.ShapePoint;
+import Model.Line;
 import Model.MaTran;
 import Model.MaTran.Mode;
 import Model.MPoint;
@@ -40,13 +41,23 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.View;
 
 /**
  *
@@ -55,7 +66,8 @@ import javax.swing.Timer;
 public class MainForm extends javax.swing.JFrame
         implements IMainForm,
         ActionListener,
-        CallBackToMainForm {
+        CallBackToMainForm,
+        TableModelListener {
 
     MainFormPresenter mPresenter;
 
@@ -73,7 +85,6 @@ public class MainForm extends javax.swing.JFrame
     public MainForm() {
         initComponents();
         mPresenter = new MainFormPresenter(this);
-        setEventListener();
         initData();
 
         mDrawDoThi = new DrawDoThi(this, mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
@@ -81,7 +92,7 @@ public class MainForm extends javax.swing.JFrame
         add(mDrawDoThi);
 
         prepareUI();
-
+        setEventListener();
     }
 
     @SuppressWarnings("unchecked")
@@ -274,13 +285,13 @@ public class MainForm extends javax.swing.JFrame
 
         tblMaTran.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         jScrollPane3.setViewportView(tblMaTran);
@@ -343,21 +354,19 @@ public class MainForm extends javax.swing.JFrame
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(panelChinhSuaDoThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(panelChinhSuaDoThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 808, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -372,15 +381,17 @@ public class MainForm extends javax.swing.JFrame
                 .addGap(18, 18, 18)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelChinhSuaDoThi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(15, 15, 15))
         );
 
         pack();
@@ -486,7 +497,9 @@ public class MainForm extends javax.swing.JFrame
 
         // load MaTran vao table
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+        mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
+        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
 
         // Table Thuat Toan
         mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
@@ -515,6 +528,9 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void setEventListener() {
+        // Table 
+        mTableModelMaTran.addTableModelListener(this);
+
         // Radion button 
         rdbCoHuong.setActionCommand("CoHuong");
         rdbCoHuong.addActionListener(this);
@@ -562,6 +578,7 @@ public class MainForm extends javax.swing.JFrame
 
         btnThayDoiGiaTri.setActionCommand("ThayDoiGiaTri");
         btnThayDoiGiaTri.addActionListener(this);
+
     }
 
     @Override
@@ -633,7 +650,9 @@ public class MainForm extends javax.swing.JFrame
         mMaTran.setMode(Mode.CoHuong);
         // cập nhật hiển thị bảng giá trị Ma trận 
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+        mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
+        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
         // xoá hiển thị đường đi trước đó 
         lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
@@ -648,7 +667,9 @@ public class MainForm extends javax.swing.JFrame
         mMaTran.setMode(Mode.VoHuong);
         // cập nhật hiển thị bảng giá trị Ma trận 
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+        mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
+        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
         // xoá hiển thị đường đi trước đó 
         lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
@@ -668,6 +689,7 @@ public class MainForm extends javax.swing.JFrame
 
         // clear table MaTrans
         mTableModelMaTran = new DefaultTableModel(new Object[][]{}, new Object[]{});
+        mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
 
         // clear table thuật toán 
@@ -703,7 +725,9 @@ public class MainForm extends javax.swing.JFrame
 
         // Table Ma Tran
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+        mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
+        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
 
         // Table Thuat Toan
         mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
@@ -739,7 +763,9 @@ public class MainForm extends javax.swing.JFrame
 
         // Table Ma Tran
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+        mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
+        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
 
         // Table Thuat Toan
         mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
@@ -852,8 +878,9 @@ public class MainForm extends javax.swing.JFrame
             // kiểm tra xem bước cuối có đường đi hay không 
             if (step == maxStep - 1) {
                 int valueOfFinalStep = Integer.parseInt(mMaTran.getListVariable()[startPoint][finishPoint].toString());
-                if(valueOfFinalStep != 0 )
-                    flagSuccess = true ;
+                if (valueOfFinalStep != 0) {
+                    flagSuccess = true;
+                }
             }
         }
 
@@ -864,7 +891,7 @@ public class MainForm extends javax.swing.JFrame
         // kiểm tra có phải là chạy 1 lần || đi đến bước cuối cùng hay ko 
         if (stepIndicator == maxStep) {
             // không có đường 
-            if (currentFinishPoint != fPoint 
+            if (currentFinishPoint != fPoint
                     || flagSuccess == false) {
                 lblBieuDienThuatToan.setText("Không có đường đi từ điểm "
                         + getPointIndicatorFromPosition(sPoint) + " -> "
@@ -1014,7 +1041,9 @@ public class MainForm extends javax.swing.JFrame
         mMaTran.updateMaTranWithListPoints(listPoints);
         // cập nhật dữ liệu trên table Ma trận 
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+        mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
+        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
 
         // xoá hiển thị kết quả đường đi trước đó
         lblBieuDienThuatToan.setText("Hiển thị đường đi và kết quả thuật toán");
@@ -1052,4 +1081,177 @@ public class MainForm extends javax.swing.JFrame
     public void updateViewAndDataWithActionThayDoiGiaTri(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
         updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
     }
+
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        if (e.getType() == TableModelEvent.UPDATE) {
+            try {
+                int rowUpdate = tblMaTran.getSelectedRow();
+                int columnUpdate = tblMaTran.getSelectedColumn();
+                String newValue = (tblMaTran.getValueAt(rowUpdate, columnUpdate)).toString();
+                System.out.println("Row : " + rowUpdate + " --- Column : " + columnUpdate);
+                mPresenter.onUpdatedValueOfLineOnTableMaTran(newValue, rowUpdate, columnUpdate);
+            } catch (Exception e1) {
+
+            }
+        }
+    }
+
+    @Override
+    public void updateValueOfLineOnTableMaTran(String value, int pointStartPosition, int pointEndPosition) {
+        // Exception : không có đường đi point -> chính point đó 
+        if (pointStartPosition == pointEndPosition) {
+            JOptionPane.showMessageDialog(this, "Không có đường đi từ điểm -> chính điểm đó");
+            mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+            mTableModelMaTran.addTableModelListener(this);
+            tblMaTran.setModel(mTableModelMaTran);
+            MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+            return;
+        }
+
+        // Exception : không thể tạo line 2 chiều trong Ma trận 
+        if (mMaTran.isMode() == Mode.CoHuong) {
+            int vl = Integer.parseInt(mMaTran.getListVariable()[pointEndPosition][pointStartPosition].toString());
+            if (vl != 0) {
+                JOptionPane.showMessageDialog(this, "Không thể tạo Line 2 chiều");
+                mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+                mTableModelMaTran.addTableModelListener(this);
+                tblMaTran.setModel(mTableModelMaTran);
+                MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+                return;
+            }
+        }
+
+        // update || add
+        try {
+            MPoint startPoint = mMaTran.getListPoints().get(pointStartPosition);
+            MPoint endPoint = mMaTran.getListPoints().get(pointEndPosition);
+
+            int newValue = Integer.parseInt(value);
+
+            // Exception : không thể tạo Line có value < 0 
+            if (newValue < 0) {
+                JOptionPane.showMessageDialog(this, "Không thể tạo Line có giá trị < 0");
+                mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+                mTableModelMaTran.addTableModelListener(this);
+                tblMaTran.setModel(mTableModelMaTran);
+                MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+                return;
+            }
+
+            boolean isUpdate = false; // flag kiểm tra xem là cập nhật hay là thêm mới đường thẳng 
+            boolean isUpdateOnVirtualLine = false; // flag kiểm tra xem là cập nhật trên Line ảo ( Line được sinh ra bởi ma trận vô hướng)
+
+            // kiểm tra update trong trường hợp Ma trận có hướng 
+            if (mMaTran.isMode() == Mode.CoHuong) {
+                int v1 = Integer.parseInt(mMaTran.getListVariable()[pointStartPosition][pointEndPosition].toString());
+                if (v1 > 0) {
+                    for (Line line : startPoint.getListLine()) {
+                        if (line.getEndIndicator() == endPoint.getIndicator()) {
+                            line.setValue(newValue);
+                            isUpdate = true;
+                            System.out.println("Update");
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // kiểm tra update trong trường hợp Ma trận vô hướng
+            if (mMaTran.isMode() == Mode.VoHuong) {
+                int v1 = Integer.parseInt(mMaTran.getListVariable()[pointStartPosition][pointEndPosition].toString());
+                if (v1 > 0) {
+                    // kiểm tra xem đường thẳng mới được cập nhật là Line thật ( có hướng ) hay Line ảo ( được sinh ra bởi ma trận vô hướng ) 
+                    // kiểm tra xem có phải là cập nhật trên Line thật ( có hướng ) 
+                    int v2 = Integer.parseInt(mMaTran.getlistVariableCoHuong()[pointStartPosition][pointEndPosition].toString());
+                    // line thật
+                    if (v2 > 0) {
+                        for (Line line : startPoint.getListLine()) {
+                            if (line.getEndIndicator() == endPoint.getIndicator()) {
+                                System.out.println("cập nhật trên line thật");
+                                line.setValue(newValue);
+                                isUpdate = true;
+                                break;
+                            }
+                        }
+                    } // line ảo
+                    else {
+                        for (Line line : endPoint.getListLine()) {
+                            System.out.println("cập nhật trên line ảo");
+                            if (line.getEndIndicator() == startPoint.getIndicator()) {
+                                line.setValue(newValue);
+                                isUpdate = true;
+                                isUpdateOnVirtualLine = true;
+                                break;
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            // thêm mới đường thẳng 
+            if (isUpdate == false) {
+                for (Line line : startPoint.getListLine()) {
+                    if (line.getEndIndicator() == endPoint.getIndicator()) {
+                        line.setValue(newValue);
+                    }
+                }
+            }
+
+            // vẽ lại trên đổ thị 
+            ShapeLine newShapeLine = new ShapeLine(
+                    startPoint.getOriginPoint(),
+                    endPoint.getOriginPoint(),
+                    newValue,
+                    (mMaTran.isMode() == Mode.CoHuong),
+                    false,
+                    startPoint.getIndicator(),
+                    endPoint.getIndicator());
+
+            // update new value 
+            if (isUpdate) {
+                if (isUpdateOnVirtualLine == false) {
+                    mDrawDoThi.callBackChangeValueOfLine(newShapeLine);
+                } else {
+                    newShapeLine.setStartIndicator(endPoint.getIndicator());
+                    newShapeLine.setFinishIndicator(startPoint.getIndicator());
+
+                    mDrawDoThi.callBackChangeValueOfLine(newShapeLine);
+                }
+            } // add new line
+            else {
+                System.out.println("Add new Line ");
+                mDrawDoThi.addNewShapeLine(newShapeLine);
+            }
+            mDrawDoThi.drawDoThiUnselected();
+
+            // cập nhật toàn ma trận
+            ArrayList<MPoint> listPoints = new ArrayList<MPoint>();
+            listPoints.addAll(mMaTran.getListPoints());
+            mMaTran.updateMaTranWithListPoints(listPoints);
+
+            // clear table thuật toán
+            mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, new Object[]{});
+            tblThuatToan.setModel(mTableModelThuatToan);
+
+            // clear label đường đi 
+            lblBieuDienThuatToan.setText("Hiển thị giá trị và đường đi thuật toán");
+
+            // cập nhật trên table Ma Tran
+            mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+            mTableModelMaTran.addTableModelListener(this);
+            tblMaTran.setModel(mTableModelMaTran);
+            MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Nhập giá trị không hợp lệ ! mời nhập số nguyên dương");
+            mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
+            mTableModelMaTran.addTableModelListener(this);
+            tblMaTran.setModel(mTableModelMaTran);
+            MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+            return;
+        }
+    }
+
 }

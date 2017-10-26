@@ -72,4 +72,6 @@ public interface IMainForm {
 
     public void updateViewAndDataWithActionThayDoiGiaTri(ArrayList<ShapePoint> listShapePoints,
             ArrayList<ShapeLine> listShapeLines);
+
+    public void updateValueOfLineOnTableMaTran(String newValue, int pointStartPosition, int pointEndPosition);
 }

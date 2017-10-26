@@ -79,7 +79,23 @@ public class DialogChangeValue extends JDialog {
         formatter.setCommitsOnValidEdit(true);
         txtValue = new JFormattedTextField(formatter);
         txtValue.setColumns(16);
-        txtValue.setValue(1);
+
+        if (isLine) {
+            txtValue.setValue(line.getValue());
+        }else 
+            txtValue.setValue(point.getIndicator());
+
+        // bôi đen giá trị ( select ) 
+        txtValue.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        txtValue.selectAll();
+                    }
+                });
+            }
+        });
     }
 
     public void setEvent() {

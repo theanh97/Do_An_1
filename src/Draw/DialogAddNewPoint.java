@@ -81,6 +81,17 @@ public class DialogAddNewPoint extends JDialog {
         }
 
         txtValue.setValue(max + 1);
+        // bôi đen giá trị ( select ) 
+        txtValue.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        txtValue.selectAll();
+                    }
+                });
+            }
+        });
     }
 
     public void setEvent() {

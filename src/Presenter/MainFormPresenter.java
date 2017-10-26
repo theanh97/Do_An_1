@@ -133,4 +133,9 @@ public class MainFormPresenter implements IMainFormPresenter {
             mView.updateViewAndDataWithActionThayDoiGiaTri(listShapePoints, listShapeLines);
         }
     }
+
+    @Override
+    public void onUpdatedValueOfLineOnTableMaTran(String value, int pointStart, int pointEnd) {
+        mView.updateValueOfLineOnTableMaTran(value, pointStart, pointEnd);
+    }
 }

@@ -10,10 +10,12 @@ import Draw.ShapeLine;
 import Draw.ShapePoint;
 import Model.Line;
 import Model.MPoint;
+import java.awt.Component;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import javax.swing.JTable;
 
 /**
  *
@@ -115,7 +117,7 @@ public class MaTranUtils {
                 for (Line line : listLines) {
                     if (sl.getStartIndicator() == line.getStartIndicator()
                             && sl.getFinishIndicator() == line.getEndIndicator()) {
-                         line.setValue(sl.getValue());
+                        line.setValue(sl.getValue());
                     }
                 }
             }
@@ -125,5 +127,21 @@ public class MaTranUtils {
         }
 
         return listPoints;
+    }
+
+    public static void updateHeightOfRowInTable(JTable table) {
+        int rowCount = table.getRowCount();
+        for (int row = 0; row < table.getRowCount(); row++) {
+            int rowHeight = table.getRowHeight();
+
+            for (int column = 0; column < table.getColumnCount(); column++) {
+                Component comp = table.prepareRenderer(table.getCellRenderer(row, column), row, column);
+                rowHeight = Math.max(rowHeight, comp.getPreferredSize().height + table.getRowCount());
+                rowHeight = Const.HEIGHT_OF_TABLE_MATRAN / rowCount;
+            }
+
+            table.setRowHeight(row, rowHeight);
+        }
+
     }
 }

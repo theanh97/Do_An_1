@@ -39,13 +39,15 @@ public interface IMainFormPresenter {
     public void onSelectedXoaDiem();
 
     public void onSelectedThemDiem();
-    
-    public void onSelectedXoaDuongThang(); 
-    
+
+    public void onSelectedXoaDuongThang();
+
     public void onSelectedThayDoiGiaTri();
 
     public void onCallBackUpdatedFromDrawDoThi(Flag flagUpdate,
             ArrayList<ShapePoint> listShapePoints,
             ArrayList<ShapeLine> listShapeLines);
+
+    public void onUpdatedValueOfLineOnTableMaTran(String value, int pointStartPosition, int pointEndPosition);
 
 }

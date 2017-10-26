@@ -242,7 +242,9 @@ public class DrawDoThi extends JPanel
 
         // draw line
         for (ShapeLine shape : mListShapeLines) {
-            shape.paint(g2d);
+            if (shape.getValue() > 0) {
+                shape.paint(g2d);
+            }
         }
 
         // draw line connecting 
@@ -276,7 +278,6 @@ public class DrawDoThi extends JPanel
             }
         }
     }
-
 
     public void drawRoad(ArrayList<Integer> road) {
         // xoá vết các đường đi trước 
@@ -412,6 +413,7 @@ public class DrawDoThi extends JPanel
                     listTemp.add(line);
                 }
             }
+
             mListShapeLines.clear();
             mListShapeLines.addAll(listTemp);
 
@@ -427,6 +429,11 @@ public class DrawDoThi extends JPanel
 
         // call back
         mCallBackToMainForm.callBackUpdatedFromDrawDoThi(flag, mListShapePoints, mListShapeLines);
+        repaint();
+    }
+
+    public void addNewShapeLine(ShapeLine line) {
+        mListShapeLines.add(line);
         repaint();
     }
 
@@ -488,7 +495,6 @@ public class DrawDoThi extends JPanel
             ShapeLine line = mListShapeLines.get(i);
             if (line.getStartIndicator() == lineChange.getStartIndicator()
                     && line.getFinishIndicator() == lineChange.getFinishIndicator()) {
-                System.out.println("Change value from : " + line.getValue() + " -> " + lineChange.getValue());
                 mListShapeLines.get(i).setValue(lineChange.getValue());
                 break;
             }
