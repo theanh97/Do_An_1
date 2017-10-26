@@ -70,20 +70,52 @@ public class ShapeLine implements MShape {
         y2 = Math.abs(y22 - y11) / 2 + Math.min(y22, y11);
 
         // draw Value of 2 Point
-        if (Math.abs(x2 - x1) < 50) {
-            if (x1 < x2) {
-                g2d.drawString("\t" + getValue(), x2 - 10, y2 + 10);
-            } else {
-                g2d.drawString("\t" + getValue(), x2 + 10, y2 + 10);
-            }
+        int xValue = 0;
+        int yValue = 0;
 
-        } else {
-            if (x1 < x2) {
-                g2d.drawString("\t" + getValue(), x2 - 30, y2 + 10);
-            } else {
-                g2d.drawString("\t" + getValue(), x2 + 30, y2 + 10);
-            }
+        xValue = x2 + 14;
+
+        if(x11 == x22 ){
+            xValue = x2 + 14; 
+        }else if(x11 > x22 ){
+            xValue = x2 -14;
+        }else {
+            xValue = x2 + 14;
         }
+        
+        if (y11 == y22) {
+            yValue = y2 - 10;
+        } else if (y11 > y22) {
+            yValue = y2 + 15;
+        } else if (y11 < y22) {
+            yValue= y2 -15 ;
+        }
+
+//        if (Math.abs(x2 - x1) < 50) {
+//            if (x1 < x2) {
+//                xValue = x2 - 10;
+//            } else {
+//                xValue = x2 + 10;
+//            }
+//
+//        } else {
+//            if (x1 < x2) {
+//                xValue = x2 - 30;
+//            } else {
+//                xValue = x2 + 30;
+//            }
+//        }
+//
+//        if (Math.abs(y2 - y1) < 30) {
+//            if (y1 < y2) {
+//                yValue = y1 + 10;
+//            } else {
+//                yValue = y1 - 10;
+//            }
+//        } else {
+//                
+//        }
+        g2d.drawString("\t" + getValue(), xValue, yValue);
 
         // draw shape 
         Polygon polygon = new Polygon();
