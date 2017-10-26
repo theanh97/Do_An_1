@@ -118,20 +118,21 @@ public class MainFormPresenter implements IMainFormPresenter {
     }
 
     @Override
-    public void onCallBackUpdatedFromDrawDoThi(DrawDoThi.Flag flagUpdate, ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
-        if (flagUpdate == Flag.DI_CHUYEN_1_DIEM) {
-            mView.updateViewAndDataWithActionDiChuyen1Diem(listShapePoints, listShapeLines);
-        } else if (flagUpdate == Flag.NOI_2_DIEM) {
-            mView.updateViewAndDataWithActionNoi2Diem(listShapePoints, listShapeLines);
-        } else if (flagUpdate == Flag.XOA_DIEM) {
-            mView.updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
-        } else if (flagUpdate == Flag.THEM_DIEM) {
-            mView.updateViewAndDataWithActionThemDiem(listShapePoints, listShapeLines);
-        } else if (flagUpdate == Flag.XOA_DUONG_THANG) {
-            mView.updateViewAndDataWithActionXoaDuongThang(listShapePoints, listShapeLines);
-        } else if (flagUpdate == Flag.THAY_DOI_GIA_TRI) {
-            mView.updateViewAndDataWithActionThayDoiGiaTri(listShapePoints, listShapeLines);
-        }
+    public void onCallBackUpdatedFromDrawDoThi(ArrayList<ShapePoint> listShapePoints, ArrayList<ShapeLine> listShapeLines) {
+        mView.updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
+//        if (flagUpdate == Flag.DI_CHUYEN_1_DIEM) {
+//            mView.updateViewAndDataWithActionDiChuyen1Diem(listShapePoints, listShapeLines);
+//        } else if (flagUpdate == Flag.NOI_2_DIEM) {
+//            mView.updateViewAndDataWithActionNoi2Diem(listShapePoints, listShapeLines);
+//        } else if (flagUpdate == Flag.XOA_DIEM) {
+//            mView.updateViewAndDataWithActionXoaDiem(listShapePoints, listShapeLines);
+//        } else if (flagUpdate == Flag.THEM_DIEM) {
+//            mView.updateViewAndDataWithActionThemDiem(listShapePoints, listShapeLines);
+//        } else if (flagUpdate == Flag.XOA_DUONG_THANG) {
+//            mView.updateViewAndDataWithActionXoaDuongThang(listShapePoints, listShapeLines);
+//        } else if (flagUpdate == Flag.THAY_DOI_GIA_TRI) {
+//            mView.updateViewAndDataWithActionThayDoiGiaTri(listShapePoints, listShapeLines);
+//        }
     }
 
     @Override

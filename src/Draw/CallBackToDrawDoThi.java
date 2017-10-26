@@ -16,6 +16,8 @@ import java.util.ArrayList;
 public interface CallBackToDrawDoThi {
 
     public void callBackSetValueForLine(boolean yes, int value);
+    
+    public void callBackAddNewLine(int value ,ShapePoint startPoint , ShapePoint finishPoint);
 
     public void callBackRemovePoint(int pointIndicator, boolean yes);
     

@@ -13,6 +13,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -20,25 +22,34 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author DELL
  */
 public class DrawDoThi extends JPanel
-        implements CallBackToDrawDoThi {
+        implements CallBackToDrawDoThi,
+        ActionListener {
 
     // mode của đồ thị
     private boolean isCoHuong;
 
+    private JPopupMenu mMenuOfPoint;
+    private JPopupMenu mMenuOfLine;
+
+    private JFrame mFrame;
     private DialogAddNewLine mDialog;
     private CallBackToMainForm mCallBackToMainForm;
     private ArrayList<ShapeLine> mListShapeLines;
     private ArrayList<ShapePoint> mListShapePoints;
     private Flag flag;
-    // Di chuyển 1 điểm 
+    // Di chuyển 1 điểm
     private boolean mFlagOfMovingPoint = false;
     private int mIndicatorOfMovingPoint = -1;
     // Nối 2 điểm 
@@ -46,105 +57,78 @@ public class DrawDoThi extends JPanel
     private Point mOriginPoint;
     private ShapeLine mShapeLineConnectingPoint;
 
+    private boolean isLeftClick = true;
+    // Point 
+    private int mPointPositionSelected = -1;
+    private Point mSelectedPointLocation = null;
+    private ShapePoint mStartPointConnected = null;
+
+    // Line 
+    private ShapeLine mSelectedLine = null;
+
     public DrawDoThi(MainForm mainForm, ArrayList<MPoint> listDatas, boolean CoHuong) {
+        mFrame = mainForm;
         mCallBackToMainForm = mainForm;
         mDialog = new DialogAddNewLine(mainForm, this);
         mDialog.setVisible(false);
         initShapeData(listDatas, CoHuong);
-        flag = Flag.DI_CHUYEN_1_DIEM;
+        initPopupMenu();
+        flag = Flag.NONE;
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e); //To change body of generated methods, choose Tools | Templates.
                 Point clickedPoint = e.getPoint();
+                mSelectedPointLocation = clickedPoint;
 
-                // Di chuyển 1 điểm 
-                if (flag == Flag.DI_CHUYEN_1_DIEM) {
-                    int i = 0;
-                    for (ShapePoint point : mListShapePoints) {
-                        if (point.getShape().contains(clickedPoint)) {
-                            mFlagOfMovingPoint = true;
-                            mIndicatorOfMovingPoint = i;
-                            break;
-                        }
-                        i++;
-                    }
-                }
+                // click vào Point 
+                int i = 0;
+                for (ShapePoint point : mListShapePoints) {
+                    if (point.getShape().contains(clickedPoint)) {
+                        // Click chuột phải -> tạo menu 
+                        if (SwingUtilities.isRightMouseButton(e)) {
+                            isLeftClick = false;
+                            mPointPositionSelected = i;
+                            mStartPointConnected = mListShapePoints.get(i);
+                            mMenuOfPoint.show(e.getComponent(), clickedPoint.x, clickedPoint.y);
+                            return;
+                        } // click chuột trái -> di chuyển 1 điểm 
+                        else {
+                            isLeftClick = true;
+                            flag = Flag.DI_CHUYEN_1_DIEM;
+                            mPointPositionSelected = i;
 
-                // Nối 2 điểm 
-                if (flag == Flag.NOI_2_DIEM) {
-                    for (ShapePoint point : mListShapePoints) {
-                        if (point.getShape().contains(clickedPoint)) {
-                            System.out.println("Có hướng : " + isCoHuong);
-                            mFlagOfConnectingPoint = true;
-                            mOriginPoint = point.getOriginPoint();
-                            mShapeLineConnectingPoint = new ShapeLine(
-                                    mOriginPoint,
-                                    mOriginPoint,
-                                    1,
-                                    isCoHuong,
-                                    false,
-                                    point.getIndicator(),
-                                    point.getIndicator());
-                            break;
-                        }
-                    }
-                }
-
-                // Xoá điểm 
-                if (flag == Flag.XOA_DIEM) {
-                    for (ShapePoint point : mListShapePoints) {
-                        if (point.getShape().contains(clickedPoint)) {
-                            new DialogRemovePoint(mainForm, DrawDoThi.this, point.getIndicator()).setVisible(true);
-                            break;
-                        }
-                    }
-                }
-
-                // Thêm điểm 
-                if (flag == Flag.THEM_DIEM) {
-                    // nếu click vào 1 Point khác => không hiển thị để thêm 
-                    for (ShapePoint point : mListShapePoints) {
-                        if (point.getShape().contains(clickedPoint)) {
                             return;
                         }
                     }
-                    // nếu click vào chỗ trống ( không phải point ) 
-                    // Tạo dialog để add vào 
+                    i++;
+                }
+
+                // click vào đường thẳng 
+                for (ShapeLine line : mListShapeLines) {
+                    if (line.getShape().contains(clickedPoint)) {
+                        // Click chuột phải -> tạo menu 
+                        if (SwingUtilities.isRightMouseButton(e)) {
+                            isLeftClick = false;
+                            mSelectedLine = new ShapeLine(
+                                    line.getOriginPoint(),
+                                    line.getFinishPoint(),
+                                    line.getValue(),
+                                    line.isIsCoHuong(),
+                                    line.isIsSelected(),
+                                    line.getStartIndicator(),
+                                    line.getFinishIndicator());
+                            mMenuOfLine.show(e.getComponent(), clickedPoint.x, clickedPoint.y);
+                            return;
+                        }
+                    }
+                }
+                
+                // click vào khoảng trống 
+                if (SwingUtilities.isRightMouseButton(e)) {
                     new DialogAddNewPoint(mainForm, DrawDoThi.this, mListShapePoints, clickedPoint)
                             .setVisible(true);
-                }
-
-                // Xoá đường thẳng 
-                if (flag == Flag.XOA_DUONG_THANG) {
-                    for (ShapeLine line : mListShapeLines) {
-                        if (line.getShape().contains(clickedPoint)) {
-                            new DialogRemoveLine(mainForm, DrawDoThi.this, line)
-                                    .setVisible(true);
-                            break;
-                        }
-                    }
-                }
-
-                // Thay đổi giá trị 
-                if (flag == Flag.THAY_DOI_GIA_TRI) {
-                    // POINT
-                    for (ShapePoint point : mListShapePoints) {
-                        if (point.getShape().contains(clickedPoint)) {
-                            new DialogChangeValue(mainForm, DrawDoThi.this, point, mListShapePoints, point)
-                                    .setVisible(true);
-                            return;
-                        }
-                    }
-                    // LINE 
-                    for (ShapeLine line : mListShapeLines) {
-                        if (line.getShape().contains(clickedPoint)) {
-                            new DialogChangeValue(mainForm, DrawDoThi.this, line, null, null)
-                                    .setVisible(true);
-                            return;
-                        }
-                    }
                 }
             }
 
@@ -152,48 +136,15 @@ public class DrawDoThi extends JPanel
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e); //To change body of generated methods, choose Tools | Templates.
                 Point releasedPoint = e.getPoint();
-                // Di chuyển 1 điểm 
-                if (flag == Flag.DI_CHUYEN_1_DIEM
-                        && mFlagOfMovingPoint) {
-                    // bỏ flag 
-                    mFlagOfMovingPoint = false;
-                    mIndicatorOfMovingPoint = -1;
-
-                    // call back về mainform 
+                // Di chuyển 1 điểm -> callback update
+                if (flag == Flag.DI_CHUYEN_1_DIEM) {
                     mCallBackToMainForm.callBackUpdatedFromDrawDoThi(
                             flag,
                             mListShapePoints,
                             mListShapeLines);
-                } // Nối 2 điểm 
-                else if (flag == Flag.NOI_2_DIEM
-                        && mFlagOfConnectingPoint) {
-                    // bỏ flag 
-                    mFlagOfConnectingPoint = false;
-                    // kiểm tra xem có có nối đến điểm nào không 
-                    for (ShapePoint point : mListShapePoints) {
-                        if (point.getShape().contains(releasedPoint)) {
-                            int finishIndicator = point.getIndicator();
-                            Point finishPoint = point.getOriginPoint();
-
-                            mShapeLineConnectingPoint.setFinishIndicator(finishIndicator);
-                            mShapeLineConnectingPoint.setFinishPoint(finishPoint);
-                            // xử lý nối 2 điểm 
-                            boolean isValid = checkConnectedOfTwoPointIsValid(
-                                    mShapeLineConnectingPoint.getStartIndicator(),
-                                    mShapeLineConnectingPoint.getFinishIndicator());
-                            // hợp lệ -> có thể tạo kết nối mới 
-                            if (isValid) {
-                                mDialog.setVisible(true);
-                                return;
-                            }
-                        }
-                    }
-                    // không hợp lệ
-                    JOptionPane.showMessageDialog(null,
-                            "Không thể tạo đường nối giữa 2 điểm !!!");
-                    repaint();
+                    flag = Flag.NONE;
+                    mPointPositionSelected = -1;
                 }
-                System.out.println("Released");
             }
         });
 
@@ -201,12 +152,10 @@ public class DrawDoThi extends JPanel
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e); //To change body of generated methods, choose Tools | Templates.
-
                 Point draggingPoint = e.getPoint();
-
-                // Di chuyển 1 điểm 
-                if (mFlagOfMovingPoint == true) {
-                    ShapePoint sp = mListShapePoints.get(mIndicatorOfMovingPoint);
+                if (isLeftClick && flag == Flag.DI_CHUYEN_1_DIEM) {
+                    // Di chuyển 1 điểm 
+                    ShapePoint sp = mListShapePoints.get(mPointPositionSelected);
                     int draggingIndicator = sp.getIndicator();
                     // thay đổi position của point đang dragged 
                     sp.setOriginPoint(draggingPoint);
@@ -219,15 +168,101 @@ public class DrawDoThi extends JPanel
                             line.setFinishPoint(draggingPoint);
                         }
                     }
-
-                    repaint();
-                } // Nối 2 điểm 
-                else if (mFlagOfConnectingPoint == true) {
-                    mShapeLineConnectingPoint.setFinishPoint(draggingPoint);
                     repaint();
                 }
             }
         });
+    }
+
+    public void initPopupMenu() {
+        // menu of Point 
+        mMenuOfPoint = new JPopupMenu();
+
+        JMenuItem menuSuaDiem = new JMenuItem("Sửa Điểm");
+        menuSuaDiem.setActionCommand("SuaDiem");
+        menuSuaDiem.addActionListener(this);
+
+        JMenuItem menuNoi2Diem = new JMenuItem("Nối 2 điểm");
+        menuNoi2Diem.setActionCommand("Noi2Diem");
+        menuNoi2Diem.addActionListener(this);
+
+        JMenuItem menuXoaDiem = new JMenuItem("Xoá Điểm");
+        menuXoaDiem.setActionCommand("XoaDiem");
+        menuXoaDiem.addActionListener(this);
+
+        mMenuOfPoint.add(menuSuaDiem);
+        mMenuOfPoint.add(menuNoi2Diem);
+        mMenuOfPoint.add(menuXoaDiem);
+
+        // menu of Point 
+        mMenuOfLine = new JPopupMenu();
+
+        JMenuItem menuSuaDuongThang = new JMenuItem("Sửa đường thẳng");
+        menuSuaDuongThang.setActionCommand("SuaDuongThang");
+        menuSuaDuongThang.addActionListener(this);
+
+        JMenuItem menuXoaDuongThang = new JMenuItem("Xoá đường thẳng");
+        menuXoaDuongThang.setActionCommand("XoaDuongThang");
+        menuXoaDuongThang.addActionListener(this);
+
+        mMenuOfLine.add(menuSuaDuongThang);
+        mMenuOfLine.add(menuXoaDuongThang);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case "SuaDiem":
+                new DialogChangeValue(mFrame,
+                        DrawDoThi.this,
+                        mListShapePoints.get(mPointPositionSelected),
+                        mListShapePoints,
+                        mListShapePoints.get(mPointPositionSelected))
+                        .setVisible(true);
+                break;
+            case "XoaDiem":
+                new DialogRemovePoint(mFrame,
+                        DrawDoThi.this,
+                        mListShapePoints.get(mPointPositionSelected).getIndicator())
+                        .setVisible(true);
+
+            case "Noi2Diem":
+                ArrayList<Integer> listPointCanConnected = MaTranUtils.getListPointCanConnected(
+                        mStartPointConnected.getIndicator(),
+                        mListShapePoints,
+                        mListShapeLines);
+                if (listPointCanConnected.size() > 0) {
+                    new DialogConnect2Point(
+                            new Point(mSelectedPointLocation.x + mFrame.getLocation().x,
+                                    mSelectedPointLocation.y + mFrame.getLocation().y),
+                            mFrame,
+                            DrawDoThi.this,
+                            mListShapePoints,
+                            mListShapeLines,
+                            mStartPointConnected)
+                            .setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Không có điểm nào để kết nối");
+                }
+                break;
+            case "SuaDuongThang":
+                new DialogChangeValue(
+                        mFrame,
+                        DrawDoThi.this,
+                        mSelectedLine,
+                        null,
+                        null)
+                        .setVisible(true);
+                break;
+            case "XoaDuongThang":
+                new DialogRemoveLine(mFrame,
+                        DrawDoThi.this,
+                        mSelectedLine)
+                        .setVisible(true);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -394,6 +429,21 @@ public class DrawDoThi extends JPanel
     }
 
     @Override
+    public void callBackAddNewLine(int value, ShapePoint startPoint, ShapePoint finishPoint) {
+        ShapeLine newLine = new ShapeLine(
+                startPoint.getOriginPoint(),
+                finishPoint.getOriginPoint(),
+                value,
+                isCoHuong,
+                false,
+                startPoint.getIndicator(),
+                finishPoint.getIndicator());
+        mListShapeLines.add(newLine);
+        mCallBackToMainForm.callBackUpdatedFromDrawDoThi(flag, mListShapePoints, mListShapeLines);
+        repaint();
+    }
+
+    @Override
     public void callBackRemovePoint(int pointIndicator, boolean yes) {
         if (yes) {
             // xoá point 
@@ -505,6 +555,7 @@ public class DrawDoThi extends JPanel
     }
 
     public enum Flag {
+        NONE,
         DI_CHUYEN_1_DIEM,
         NOI_2_DIEM,
         XOA_DIEM,

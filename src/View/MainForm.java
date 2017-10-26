@@ -87,9 +87,10 @@ public class MainForm extends javax.swing.JFrame
         mPresenter = new MainFormPresenter(this);
         initData();
 
+        
         mDrawDoThi = new DrawDoThi(this, mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
-        mDrawDoThi.setBounds(334, 27, 860, 384);
-        add(mDrawDoThi);
+        mDrawDoThi.setBounds(0, 0, panelContainDrawDoThi.getWidth(), panelContainDrawDoThi.getHeight());
+        panelContainDrawDoThi.add(mDrawDoThi);
 
         prepareUI();
         setEventListener();
@@ -120,13 +121,7 @@ public class MainForm extends javax.swing.JFrame
         lblBieuDienThuatToan = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblMaTran = new javax.swing.JTable();
-        panelChinhSuaDoThi = new javax.swing.JPanel();
-        btnNoi2Diem = new javax.swing.JButton();
-        btnDiChuyen1Diem = new javax.swing.JButton();
-        btnXoaDiem = new javax.swing.JButton();
-        btnThemDiem = new javax.swing.JButton();
-        btnThayDoiGiaTri = new javax.swing.JButton();
-        btnXoaDuongThang = new javax.swing.JButton();
+        panelContainDrawDoThi = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TÌM ĐƯỜNG ĐI NGẮN NHẤT ");
@@ -296,56 +291,15 @@ public class MainForm extends javax.swing.JFrame
         ));
         jScrollPane3.setViewportView(tblMaTran);
 
-        panelChinhSuaDoThi.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Chỉnh sửa đồ thị", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
-
-        btnNoi2Diem.setText("Nối 2 điểm");
-
-        btnDiChuyen1Diem.setText("Di chuyển");
-        btnDiChuyen1Diem.setToolTipText("");
-
-        btnXoaDiem.setText("Xoá Điểm");
-        btnXoaDiem.setToolTipText("");
-
-        btnThemDiem.setText("Thêm Điểm");
-        btnThemDiem.setToolTipText("");
-
-        btnThayDoiGiaTri.setText("Thay đổi giá trị");
-        btnThayDoiGiaTri.setToolTipText("");
-
-        btnXoaDuongThang.setText("Xoá đường thẳng");
-        btnXoaDuongThang.setToolTipText("");
-
-        javax.swing.GroupLayout panelChinhSuaDoThiLayout = new javax.swing.GroupLayout(panelChinhSuaDoThi);
-        panelChinhSuaDoThi.setLayout(panelChinhSuaDoThiLayout);
-        panelChinhSuaDoThiLayout.setHorizontalGroup(
-            panelChinhSuaDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelChinhSuaDoThiLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnDiChuyen1Diem)
-                .addGap(18, 18, 18)
-                .addComponent(btnNoi2Diem)
-                .addGap(18, 18, 18)
-                .addComponent(btnXoaDiem)
-                .addGap(18, 18, 18)
-                .addComponent(btnXoaDuongThang)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnThemDiem)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnThayDoiGiaTri)
-                .addContainerGap())
+        javax.swing.GroupLayout panelContainDrawDoThiLayout = new javax.swing.GroupLayout(panelContainDrawDoThi);
+        panelContainDrawDoThi.setLayout(panelContainDrawDoThiLayout);
+        panelContainDrawDoThiLayout.setHorizontalGroup(
+            panelContainDrawDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 866, Short.MAX_VALUE)
         );
-        panelChinhSuaDoThiLayout.setVerticalGroup(
-            panelChinhSuaDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelChinhSuaDoThiLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(panelChinhSuaDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDiChuyen1Diem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnNoi2Diem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnXoaDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnThemDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnThayDoiGiaTri, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnXoaDuongThang, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+        panelContainDrawDoThiLayout.setVerticalGroup(
+            panelContainDrawDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -354,43 +308,40 @@ public class MainForm extends javax.swing.JFrame
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(panelChinhSuaDoThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 808, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelContainDrawDoThi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 875, Short.MAX_VALUE))
+                .addGap(23, 23, 23))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelChinhSuaDoThi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelContainDrawDoThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15))
         );
 
@@ -445,14 +396,8 @@ public class MainForm extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChayMotLan;
     private javax.swing.JButton btnChayTungBuoc;
-    private javax.swing.JButton btnDiChuyen1Diem;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.ButtonGroup btnGroupPhuongThucNhapDoThi;
-    private javax.swing.JButton btnNoi2Diem;
-    private javax.swing.JButton btnThayDoiGiaTri;
-    private javax.swing.JButton btnThemDiem;
-    private javax.swing.JButton btnXoaDiem;
-    private javax.swing.JButton btnXoaDuongThang;
     private javax.swing.JComboBox<String> cmbDiemCuoi;
     private javax.swing.JComboBox<String> cmbDiemXuatPhat;
     private javax.swing.JComboBox<String> cmbDoThiCoSan;
@@ -464,7 +409,7 @@ public class MainForm extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblBieuDienThuatToan;
-    private javax.swing.JPanel panelChinhSuaDoThi;
+    private javax.swing.JPanel panelContainDrawDoThi;
     private javax.swing.JRadioButton rdbCoHuong;
     private javax.swing.JRadioButton rdbDoThiCoSan;
     private javax.swing.JRadioButton rdbTuVe;
@@ -475,8 +420,6 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void prepareUI() {
-        btnDiChuyen1Diem.setFocusPainted(true);
-
         // combobox Do thi co san 
         cmbDoThiCoSan.removeAllItems();
         cmbDoThiCoSan.addItem("Đồ thị 1");
@@ -560,25 +503,6 @@ public class MainForm extends javax.swing.JFrame
 
         btnChayTungBuoc.setActionCommand("ChayTungBuoc");
         btnChayTungBuoc.addActionListener(this);
-
-        btnDiChuyen1Diem.setActionCommand("DiChuyen1Diem");
-        btnDiChuyen1Diem.addActionListener(this);
-
-        btnNoi2Diem.setActionCommand("Noi2Diem");
-        btnNoi2Diem.addActionListener(this);
-
-        btnXoaDiem.setActionCommand("XoaDiem");
-        btnXoaDiem.addActionListener(this);
-
-        btnThemDiem.setActionCommand("ThemDiem");
-        btnThemDiem.addActionListener(this);
-
-        btnXoaDuongThang.setActionCommand("XoaDuongThang");
-        btnXoaDuongThang.addActionListener(this);
-
-        btnThayDoiGiaTri.setActionCommand("ThayDoiGiaTri");
-        btnThayDoiGiaTri.addActionListener(this);
-
     }
 
     @Override
@@ -614,30 +538,6 @@ public class MainForm extends javax.swing.JFrame
             case "ChayTungBuoc":
                 mPresenter.onSelectedChayTungBuoc();
                 System.err.println("Chạy Từng bước");
-                break;
-            case "DiChuyen1Diem":
-                mPresenter.onSelectedDiChuyen1Diem();
-                System.err.println("Di chuyển 1 điểm");
-                break;
-            case "Noi2Diem":
-                mPresenter.onSelectedNoi2Diem();
-                System.err.println("Nối 2 điểm");
-                break;
-            case "XoaDiem":
-                mPresenter.onSelectedXoaDiem();
-                System.err.println("Xoá điểm");
-                break;
-            case "ThemDiem":
-                mPresenter.onSelectedThemDiem();
-                System.err.println("Thêm điểm");
-                break;
-            case "XoaDuongThang":
-                mPresenter.onSelectedXoaDuongThang();
-                System.err.println("Xoá đường thẳng");
-                break;
-            case "ThayDoiGiaTri":
-                mPresenter.onSelectedThayDoiGiaTri();
-                System.err.println("Thay đổi giá trị");
                 break;
             default:
                 break;
@@ -1022,7 +922,7 @@ public class MainForm extends javax.swing.JFrame
     public void callBackUpdatedFromDrawDoThi(DrawDoThi.Flag flagUpdate, ArrayList<ShapePoint> listShapePoints,
             ArrayList<ShapeLine> listShapeLines
     ) {
-        mPresenter.onCallBackUpdatedFromDrawDoThi(flagUpdate, listShapePoints, listShapeLines);
+        mPresenter.onCallBackUpdatedFromDrawDoThi(listShapePoints, listShapeLines);
     }
 
     @Override

@@ -142,6 +142,42 @@ public class MaTranUtils {
 
             table.setRowHeight(row, rowHeight);
         }
+    }
 
+    public static ArrayList<Integer> getListPointCanConnected(int startPoint, ArrayList<ShapePoint> listPoints, ArrayList<ShapeLine> listLines) {
+        ArrayList<Integer> listPoint = new ArrayList<Integer>();
+
+        ArrayList<Integer> listPointIndicatorConnected = new ArrayList<Integer>();
+        // tìm những point đã được connect 
+        for (ShapeLine line : listLines) {
+            if (line.getStartIndicator() == startPoint) {
+                listPointIndicatorConnected.add(line.getFinishIndicator());
+            }
+            if (line.getFinishIndicator() == startPoint) {
+                listPointIndicatorConnected.add(line.getStartIndicator());
+            }
+        }
+
+        // add vào 
+        for (ShapePoint point : listPoints) {
+            int indicator = point.getIndicator();
+            if (indicator == startPoint) {
+                continue;
+            }
+            
+            boolean flagAdded = true;
+            for (Integer i : listPointIndicatorConnected) {
+                if (i == indicator) {
+                    flagAdded = false;
+                    break;
+                }
+            }
+
+            if (flagAdded) {
+                listPoint.add(indicator);
+            }
+        }
+
+        return listPoint;
     }
 }
