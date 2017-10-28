@@ -5,7 +5,10 @@
  */
 package Draw;
 
+import Model.DataPerStep;
+import Model.Line;
 import Model.MPoint;
+import Utils.Const;
 import Utils.MaTranUtils;
 import View.MainForm;
 import java.awt.Graphics;
@@ -22,6 +25,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -124,7 +131,7 @@ public class DrawDoThi extends JPanel
                         }
                     }
                 }
-                
+
                 // click vào khoảng trống 
                 if (SwingUtilities.isRightMouseButton(e)) {
                     new DialogAddNewPoint(mainForm, DrawDoThi.this, mListShapePoints, clickedPoint)
@@ -225,7 +232,7 @@ public class DrawDoThi extends JPanel
                         DrawDoThi.this,
                         mListShapePoints.get(mPointPositionSelected).getIndicator())
                         .setVisible(true);
-
+                break;
             case "Noi2Diem":
                 ArrayList<Integer> listPointCanConnected = MaTranUtils.getListPointCanConnected(
                         mStartPointConnected.getIndicator(),
@@ -551,6 +558,187 @@ public class DrawDoThi extends JPanel
         }
         // call back 
         mCallBackToMainForm.callBackUpdatedFromDrawDoThi(flag, mListShapePoints, mListShapeLines);
+        repaint();
+    }
+
+    public ShapeLine getShapeLineWithIndicator(int startIndicator, int finishIndicator) {
+        for (ShapeLine line : mListShapeLines) {
+            if (line.getStartIndicator() == startIndicator
+                    && line.getFinishIndicator() == finishIndicator) {
+                return line;
+            }
+        }
+        return null;
+    }
+
+    public ShapePoint getShapePointWithIndicator(int indicator) {
+        for (ShapePoint point : mListShapePoints) {
+            if (point.getIndicator() == indicator) {
+                return point;
+            }
+        }
+        return null;
+    }
+
+    public void drawDoThiWithActionChayTuDong(ArrayList<DataPerStep> listDPS, long delayTime) {
+        long increase = delayTime;
+        Timer t = new Timer();
+
+        for (int step = 0; step < listDPS.size(); step++) {
+            DataPerStep dps = listDPS.get(step);
+            int startIndicator = dps.getStartIndicator();
+            int finishIndicator = dps.getFinishIndicator();
+
+            // show từng Line được thử 
+            boolean isNewStep = true;
+            for (Line line : dps.getListLinesTesting()) {
+                if (isNewStep) {
+                    // xoá đi nhánh sai <=> đi tới nhánh mới
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            // xoá nhánh sai 
+                            int sizePoint = dps.getListPointOfTrueRoad().size();
+                            if (sizePoint > 1) {
+                                drawFinalLineInOneStep(dps);
+                                int DiemCuoi = dps.getListPointOfTrueRoad().get(sizePoint - 1);
+                                int DiemKeCuoi = dps.getListPointOfTrueRoad().get(sizePoint - 2);
+                                ShapePoint sp = getShapePointWithIndicator(DiemCuoi);
+                                if (sp != null) {
+                                    sp.setIsSelected(false);
+                                }
+                                ShapeLine sl = getShapeLineWithIndicator(DiemCuoi, DiemKeCuoi);
+                                if (sl != null) {
+                                    sl.setIsSelected(false);
+                                } else {
+                                    if (isCoHuong == false) {
+                                        sl = getShapeLineWithIndicator(DiemKeCuoi, DiemCuoi);
+                                        if (sl != null) {
+                                            sl.setIsSelected(false);
+                                        }
+                                    }
+                                }
+                            }
+
+                            drawWhenTestingLineInOneStep(dps, line);
+                        }
+                    }, delayTime);
+                    delayTime += increase;
+                } else {
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            drawWhenTestingLineInOneStep(dps, line);
+                        }
+                    }, delayTime);
+                    delayTime += increase;
+                }
+            }
+
+            // không có đường đi 
+            if (step == listDPS.size() - 1 && dps.getListLinesTesting().size() == 0) {
+                t.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mCallBackToMainForm.callBackUpdateViewPerStepWithActionChayTuDongFromDrawDoThi(dps);
+                        drawDoThiUnselected();
+                    }
+                }, delayTime);
+            } 
+            // có đường đi
+            else {
+                // hiển thị Line cuối cùng ( được chọn ) 
+                t.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mCallBackToMainForm.callBackUpdateViewPerStepWithActionChayTuDongFromDrawDoThi(dps);
+                        drawFinalLineInOneStep(dps);
+                    }
+                }, delayTime);
+            }
+            delayTime += increase;
+        }
+
+    }
+
+    public void drawWhenTestingLineInOneStep(DataPerStep dps, Line TestingLine) {
+        // bỏ chọn line && point trước đó đã test  
+        for (Line line : dps.getListLinesTesting()) {
+            ShapeLine sl = getShapeLineWithIndicator(line.getStartIndicator(), line.getEndIndicator());
+            ShapePoint sp = getShapePointWithIndicator(line.getEndIndicator());
+
+            if (sl != null) {
+                sl.setIsSelected(false);
+            } else {
+                // Vô hướng
+                if (isCoHuong == false) {
+                    sl = getShapeLineWithIndicator(line.getEndIndicator(), line.getStartIndicator());
+                    if (sl != null) {
+                        sl.setIsSelected(false);
+                    }
+                }
+            }
+            if (sp != null) {
+                sp.setIsSelected(false);
+            }
+        }
+
+        // line và point được chọn 
+        ShapeLine sl = getShapeLineWithIndicator(TestingLine.getStartIndicator(), TestingLine.getEndIndicator());
+        ShapePoint sp = getShapePointWithIndicator(TestingLine.getEndIndicator());
+
+        if (sl != null) {
+
+            sl.setColor(Const.COLOR_TESTING);
+        } else {
+            // Vô hướng
+            if (isCoHuong == false) {
+                sl = getShapeLineWithIndicator(TestingLine.getEndIndicator(), TestingLine.getStartIndicator());
+                if (sl != null) {
+                    sl.setIsSelected(false);
+                }
+            }
+        }
+        if (sp != null) {
+            sp.setColor(Const.COLOR_TESTING);
+        }
+
+        repaint();
+    }
+
+    public void drawFinalLineInOneStep(DataPerStep dps) {
+        // bỏ chọn tất cả line && point 
+        for (ShapeLine sl : mListShapeLines) {
+            sl.setIsSelected(false);
+        }
+
+        for (ShapePoint sp : mListShapePoints) {
+            sp.setIsSelected(false);
+        }
+
+        // chọn những line và point đã đi qua 
+        int i = 0;
+        for (Integer pointIndicator : dps.getListPointOfTrueRoad()) {
+            ShapePoint sp = getShapePointWithIndicator(pointIndicator);
+            if (i != 0) {
+                ShapeLine sl = getShapeLineWithIndicator(i, pointIndicator);
+                if (sl != null) {
+                    sl.setIsSelected(true);
+                } else {
+                    // Vô hướng
+                    if (isCoHuong == false) {
+                        sl = getShapeLineWithIndicator(pointIndicator, i);
+                        if (sl != null) {
+                            sl.setIsSelected(true);
+                        }
+                    }
+                }
+            }
+            if (sp != null) {
+                sp.setIsSelected(true);
+            }
+            i = pointIndicator;
+        }
         repaint();
     }
 

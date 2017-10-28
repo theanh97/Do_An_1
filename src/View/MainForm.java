@@ -5,12 +5,14 @@
  */
 package View;
 
-import Algorithm.DataOfTwoPointForOneStep;
+import Model.DataOfTwoPointForOneStep;
 import Algorithm.Dijkstra;
 import Draw.CallBackToMainForm;
 import Draw.DrawDoThi;
 import Draw.ShapeLine;
 import Draw.ShapePoint;
+import Utils.CellRenderer;
+import Model.DataPerStep;
 import Model.Line;
 import Model.MaTran;
 import Model.MaTran.Mode;
@@ -43,6 +45,7 @@ import javax.swing.table.TableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -87,7 +90,6 @@ public class MainForm extends javax.swing.JFrame
         mPresenter = new MainFormPresenter(this);
         initData();
 
-        
         mDrawDoThi = new DrawDoThi(this, mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
         mDrawDoThi.setBounds(0, 0, panelContainDrawDoThi.getWidth(), panelContainDrawDoThi.getHeight());
         panelContainDrawDoThi.add(mDrawDoThi);
@@ -115,6 +117,9 @@ public class MainForm extends javax.swing.JFrame
         jPanel4 = new javax.swing.JPanel();
         btnChayMotLan = new javax.swing.JButton();
         btnChayTungBuoc = new javax.swing.JButton();
+        btnChayTuDong = new javax.swing.JButton();
+        cmbDelayTime = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblThuatToan = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -124,7 +129,7 @@ public class MainForm extends javax.swing.JFrame
         panelContainDrawDoThi = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("TÌM ĐƯỜNG ĐI NGẮN NHẤT ");
+        setTitle("DIJKSTRA - Tìm đường đi ngắn nhất");
         setResizable(false);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kiểu đồ thị", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
@@ -151,11 +156,11 @@ public class MainForm extends javax.swing.JFrame
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(19, 19, 19)
                 .addComponent(rdbCoHuong)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rdbVoHuong)
-                .addGap(39, 39, 39))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,11 +223,11 @@ public class MainForm extends javax.swing.JFrame
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(21, 21, 21)
                 .addComponent(cmbDiemXuatPhat, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cmbDiemCuoi, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(22, 22, 22))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,15 +245,34 @@ public class MainForm extends javax.swing.JFrame
 
         btnChayTungBuoc.setText("Chạy từng bước");
 
+        btnChayTuDong.setText("Chạy tự động");
+        btnChayTuDong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChayTuDongActionPerformed(evt);
+            }
+        });
+
+        cmbDelayTime.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel1.setText("Delay (ms)");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnChayMotLan)
-                .addGap(39, 39, 39)
-                .addComponent(btnChayTungBuoc)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnChayTuDong)
+                    .addComponent(btnChayMotLan, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 16, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnChayTungBuoc, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cmbDelayTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -256,9 +280,16 @@ public class MainForm extends javax.swing.JFrame
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnChayMotLan, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                    .addComponent(btnChayTungBuoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                    .addComponent(btnChayTungBuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(btnChayMotLan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(4, 4, 4)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnChayTuDong, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbDelayTime, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tblThuatToan.setModel(new javax.swing.table.DefaultTableModel(
@@ -275,7 +306,7 @@ public class MainForm extends javax.swing.JFrame
         jScrollPane1.setViewportView(tblThuatToan);
 
         lblBieuDienThuatToan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
+        lblBieuDienThuatToan.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hiển thị đường đi và tổng độ dài", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
         jScrollPane2.setViewportView(lblBieuDienThuatToan);
 
         tblMaTran.setModel(new javax.swing.table.DefaultTableModel(
@@ -295,7 +326,7 @@ public class MainForm extends javax.swing.JFrame
         panelContainDrawDoThi.setLayout(panelContainDrawDoThiLayout);
         panelContainDrawDoThiLayout.setHorizontalGroup(
             panelContainDrawDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 866, Short.MAX_VALUE)
+            .addGap(0, 1036, Short.MAX_VALUE)
         );
         panelContainDrawDoThiLayout.setVerticalGroup(
             panelContainDrawDoThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -306,19 +337,21 @@ public class MainForm extends javax.swing.JFrame
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelContainDrawDoThi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 875, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelContainDrawDoThi, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1036, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1036, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(23, 23, 23))
         );
         layout.setVerticalGroup(
@@ -328,21 +361,21 @@ public class MainForm extends javax.swing.JFrame
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
+                        .addGap(37, 37, 37)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                        .addGap(40, 40, 40)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(panelContainDrawDoThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(41, 41, 41))
         );
 
         pack();
@@ -360,6 +393,10 @@ public class MainForm extends javax.swing.JFrame
     private void rdbTuVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbTuVeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rdbTuVeActionPerformed
+
+    private void btnChayTuDongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChayTuDongActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnChayTuDongActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -395,12 +432,15 @@ public class MainForm extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChayMotLan;
+    private javax.swing.JButton btnChayTuDong;
     private javax.swing.JButton btnChayTungBuoc;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.ButtonGroup btnGroupPhuongThucNhapDoThi;
+    private javax.swing.JComboBox<String> cmbDelayTime;
     private javax.swing.JComboBox<String> cmbDiemCuoi;
     private javax.swing.JComboBox<String> cmbDiemXuatPhat;
     private javax.swing.JComboBox<String> cmbDoThiCoSan;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -420,6 +460,7 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void prepareUI() {
+
         // combobox Do thi co san 
         cmbDoThiCoSan.removeAllItems();
         cmbDoThiCoSan.addItem("Đồ thị 1");
@@ -432,6 +473,12 @@ public class MainForm extends javax.swing.JFrame
             int point = mMaTran.getListPoints().get(i).getIndicator();
             cmbDiemXuatPhat.addItem("" + point);
             cmbDiemCuoi.addItem("" + point);
+        }
+
+        // combobox Delay Time
+        cmbDelayTime.removeAllItems();
+        for (int i = 0; i < Const.DELAY_TIME.length; i++) {
+            cmbDelayTime.addItem("" + Const.DELAY_TIME[i]);
         }
 
         // Co Huong && Chon Do thi co san 1 
@@ -447,6 +494,12 @@ public class MainForm extends javax.swing.JFrame
         // Table Thuat Toan
         mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
         tblThuatToan.setModel(mTableModelThuatToan);
+        tblThuatToan.setRowHeight(40);
+
+        // lable giá trị thuật toán 
+        jScrollPane2.setBorder(null);
+        lblBieuDienThuatToan.setFont(new Font("Arial", Font.BOLD, 16));
+        lblBieuDienThuatToan.setForeground(Color.BLUE);
     }
 
     @Override
@@ -503,6 +556,9 @@ public class MainForm extends javax.swing.JFrame
 
         btnChayTungBuoc.setActionCommand("ChayTungBuoc");
         btnChayTungBuoc.addActionListener(this);
+
+        btnChayTuDong.setActionCommand("ChayTuDong");
+        btnChayTuDong.addActionListener(this);
     }
 
     @Override
@@ -539,6 +595,10 @@ public class MainForm extends javax.swing.JFrame
                 mPresenter.onSelectedChayTungBuoc();
                 System.err.println("Chạy Từng bước");
                 break;
+            case "ChayTuDong":
+                handleWithActionChayTuDong();
+                System.err.println("Chạy Tự động");
+                break;
             default:
                 break;
         }
@@ -554,7 +614,7 @@ public class MainForm extends javax.swing.JFrame
         tblMaTran.setModel(mTableModelMaTran);
         MaTranUtils.updateHeightOfRowInTable(tblMaTran);
         // xoá hiển thị đường đi trước đó 
-        lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
+        lblBieuDienThuatToan.setText("");
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
         tblThuatToan.setModel(mTableModelThuatToan);
         // vẽ lại đồ thị 
@@ -571,7 +631,7 @@ public class MainForm extends javax.swing.JFrame
         tblMaTran.setModel(mTableModelMaTran);
         MaTranUtils.updateHeightOfRowInTable(tblMaTran);
         // xoá hiển thị đường đi trước đó 
-        lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
+        lblBieuDienThuatToan.setText("");
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
         tblThuatToan.setModel(mTableModelThuatToan);
         // vẽ lại đồ thị 
@@ -647,7 +707,7 @@ public class MainForm extends javax.swing.JFrame
     public void clearViewOfOldRoad() {
         // xoá hiển thị giá trị của đường đi trước 
         mDrawDoThi.drawDoThiUnselected();
-        lblBieuDienThuatToan.setText("Hiển thị Đường Đi và Giá Trị thuật toán");
+        lblBieuDienThuatToan.setText("");
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
         tblThuatToan.setModel(mTableModelThuatToan);
     }
@@ -728,6 +788,7 @@ public class MainForm extends javax.swing.JFrame
         int currentLength = 0;
         int currentFinishPoint = -1;
         boolean flagSuccess = false;
+        ArrayList<Line> listLinePassed = new ArrayList<Line>();
 
         for (int step = 0; step < stepIndicator; step++) {
             DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
@@ -759,8 +820,13 @@ public class MainForm extends javax.swing.JFrame
                                     + " , " + getPointIndicatorFromPosition(startPoint) + " ]";
                         } // Điểm được chọn 
                         else {
-                            listDataForTable[step][pointConnected] = " *** [ " + valueOfPointConnected
+                            listDataForTable[step][pointConnected] = "[ " + valueOfPointConnected
                                     + " , " + getPointIndicatorFromPosition(startPoint) + " ]";
+
+                            listLinePassed.add(
+                                    new Line(getPointIndicatorFromPosition(startPoint),
+                                            getPointIndicatorFromPosition(pointConnected),
+                                            valueOfPointConnected));
                         }
                     }
                 } // step == 0 => bước 1 => kết nối với chính điểm đầu tiên  
@@ -768,9 +834,16 @@ public class MainForm extends javax.swing.JFrame
                     if (pointConnected != startPoint) {
 //                        System.out.println("MPoint Connected : " + (pointConnected - 1));
                         listDataForTable[step][pointConnected] = "[ @ ," + getPointIndicatorFromPosition(startPoint) + " ]";
-                    } else {
-                        listDataForTable[step][pointConnected] = " *** [ " + valueOfPointConnected
+                    } // Điểm được chọn
+                    else {
+                        listDataForTable[step][pointConnected] = "[ " + valueOfPointConnected
                                 + " , " + getPointIndicatorFromPosition(startPoint) + " ]";
+
+                        listLinePassed.add(
+                                new Line(getPointIndicatorFromPosition(startPoint),
+                                        getPointIndicatorFromPosition(pointConnected),
+                                        valueOfPointConnected));
+
                     }
                 }
             }
@@ -784,19 +857,22 @@ public class MainForm extends javax.swing.JFrame
             }
         }
 
-        // tạo TableModel 
-        mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
-        tblThuatToan.setModel(mTableModelThuatToan);
-
+//        // tạo TableModel thuật toán
+//        mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
+//        tblThuatToan.setModel(mTableModelThuatToan);
         // kiểm tra có phải là chạy 1 lần || đi đến bước cuối cùng hay ko 
         if (stepIndicator == maxStep) {
             // không có đường 
             if (currentFinishPoint != fPoint
                     || flagSuccess == false) {
-                lblBieuDienThuatToan.setText("Không có đường đi từ điểm "
-                        + getPointIndicatorFromPosition(sPoint) + " -> "
+                lblBieuDienThuatToan.setText("    Không có đường đi từ điểm "
+                        + getPointIndicatorFromPosition(sPoint) + "  ->  "
                         + getPointIndicatorFromPosition(fPoint));
                 mDrawDoThi.drawDoThiUnselected();
+                // table thuật toán
+                mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
+                tblThuatToan.setModel(mTableModelThuatToan);
+                MaTranUtils.updateTableWithSelectedCells(tblThuatToan, new ArrayList<Pair<Integer, Integer>>());
                 return;
             }
         }
@@ -825,29 +901,36 @@ public class MainForm extends javax.swing.JFrame
                 flagDiemCuoi = false;
             }
         }
-        ArrayList<Integer> listRoadsFinal = new ArrayList<Integer>();
+        ArrayList<Integer> listPointOfTrueRoad = new ArrayList<Integer>();
 
         StringBuilder result = new StringBuilder();
-        result.append("Đường đi từ " + getPointIndicatorFromPosition(sPoint) + " -> "
-                + getPointIndicatorFromPosition(currentFinishPoint) + " : "
-                + getPointIndicatorFromPosition(sPoint) + " -> ");
+        result.append("    Đường đi từ " + getPointIndicatorFromPosition(sPoint) + " -> "
+                + getPointIndicatorFromPosition(currentFinishPoint) + " :      "
+                + getPointIndicatorFromPosition(sPoint) + "   ->   ");
 
         for (int i = listRoadsTemp.size() - 1; i >= 0; i--) {
-            listRoadsFinal.add(getPointIndicatorFromPosition(listRoadsTemp.get(i).getValue()));
+            listPointOfTrueRoad.add(getPointIndicatorFromPosition(listRoadsTemp.get(i).getValue()));
             System.out.println(getPointIndicatorFromPosition(listRoadsTemp.get(i).getValue()) + " -> ");
         }
 
-        for (int i = 1; i < listRoadsFinal.size(); i++) {
-            result.append(listRoadsFinal.get(i) + " -> ");
+        for (int i = 1; i < listPointOfTrueRoad.size(); i++) {
+            result.append(listPointOfTrueRoad.get(i) + "   ->   ");
         }
-        result.replace(result.length() - 3, result.length(), "");
+        result.replace(result.length() - 5, result.length(), "");
 
         // xuất đường đi  
-        result.append(" --- Tổng giá trị đường đi : " + currentLength);
+        result.append("        ---       Tổng độ dài :  " + currentLength);
         lblBieuDienThuatToan.setText(result.toString());
 
+        // table thuật toán
+        listPointOfTrueRoad.add(0, getPointIndicatorFromPosition(sPoint));
+        ArrayList<Pair<Integer, Integer>> listCellSelectedPointPosition = getListCellSelectedPosition(listPointOfTrueRoad, listLinePassed);
+        mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
+        tblThuatToan.setModel(mTableModelThuatToan);
+        MaTranUtils.updateTableWithSelectedCells(tblThuatToan, listCellSelectedPointPosition);
+
         // vẽ đường đi lên đồ thị 
-        mDrawDoThi.drawRoad(listRoadsFinal);
+        mDrawDoThi.drawRoad(listPointOfTrueRoad);
     }
 
     int getPointIndicatorFromPosition(int pointPosition) {
@@ -983,7 +1066,126 @@ public class MainForm extends javax.swing.JFrame
     }
 
     @Override
-    public void tableChanged(TableModelEvent e) {
+    public void handleWithActionChayTuDong() {
+        // lấy dữ liệu từ giải thuật dijkstra
+        int soDinh = mMaTran.getListPoints().size();
+        int sPoint = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
+        int fPoint = Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString());
+
+        int startPosition = getPointPositionFromIndicator(sPoint);
+        int finishPosition = getPointPositionFromIndicator(fPoint);
+        mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(
+                MaTranUtils.convertListObjectToListInt(mMaTran.getListVariable()),
+                soDinh,
+                startPosition,
+                finishPosition);
+
+        // Tạo Data cho vào table Thuật Toán 
+        Object[][] listVariableForTable = new Object[mListDataOfTwoPointForOneStep.size()][soDinh];
+
+        ArrayList<DataPerStep> listDPS = new ArrayList<DataPerStep>();
+        ArrayList<Line> listLinePassed = new ArrayList<Line>();
+
+        for (int step = 0; step < mListDataOfTwoPointForOneStep.size(); step++) {
+            DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
+            int finishPoint = item.getFinishPoint();
+            int startPoint = item.getStartPoint();
+            listLinePassed.add(
+                    new Line(getPointIndicatorFromPosition(startPoint),
+                            getPointIndicatorFromPosition(finishPoint),
+                            item.getCurrentValue()));
+
+            // tạo dữ liệu cho mỗi bước 
+            ArrayList<Line> listLinePassedOfCurrentStep = new ArrayList<Line>();
+            listLinePassedOfCurrentStep.addAll(listLinePassed);
+            ArrayList<Line> listLineTesting = new ArrayList<Line>();
+
+            // đánh dấu những điểm đã đi qua 
+            ArrayList<Integer> listPointMarked = item.getListPointMarked();
+            for (int i = 0; i < listPointMarked.size(); i++) {
+                listVariableForTable[step][listPointMarked.get(i)] = "---";
+            }
+
+            for (Entry<Integer, Integer> item2 : item.getListValue().entrySet()) {
+                int pointConnected = item2.getKey();
+                int valueOfPointConnected = item2.getValue();
+                // step > 0 => bước > 1 
+                if (step != 0) {
+                    Object[][] listVariables = mMaTran.getListVariable();
+                    // những điểm không thể kết nối được 
+                    if ((listVariables[startPoint][pointConnected]).toString().equals("0")) {
+                        listVariableForTable[step][pointConnected] = "[ @ ," + getPointIndicatorFromPosition(startPoint) + " ]";
+                    } else {
+                        // những điểm có thể kết nối nhưng không phải là điểm được chọn 
+                        if (pointConnected != finishPoint) {
+                            listVariableForTable[step][pointConnected] = "[ " + valueOfPointConnected
+                                    + " , " + getPointIndicatorFromPosition(startPoint) + " ]";
+
+                            Line line = new Line(
+                                    getPointIndicatorFromPosition(startPoint),
+                                    getPointIndicatorFromPosition(pointConnected),
+                                    valueOfPointConnected);
+                            listLineTesting.add(line);
+                        } // Điểm được chọn 
+                        else {
+                            listVariableForTable[step][pointConnected] = "[ " + valueOfPointConnected
+                                    + " , " + getPointIndicatorFromPosition(startPoint) + " ]";
+
+                            Line line = new Line(
+                                    getPointIndicatorFromPosition(startPoint),
+                                    getPointIndicatorFromPosition(pointConnected),
+                                    valueOfPointConnected);
+                            listLineTesting.add(line);
+                        }
+                    }
+                } // step == 0 => bước 1 => kết nối với chính điểm đầu tiên  
+                else {
+
+                    // những điểm không kết nối được 
+                    if (pointConnected != startPoint) {
+                        listVariableForTable[step][pointConnected] = "[ @ ," + getPointIndicatorFromPosition(startPoint) + " ]";
+                    } // kết nối được ( điểm đầu tiên - startPoint )
+                    else {
+                        listVariableForTable[step][pointConnected] = "[ " + valueOfPointConnected
+                                + " , " + getPointIndicatorFromPosition(startPoint) + " ]";
+
+                        Line line = new Line(
+                                getPointIndicatorFromPosition(startPoint),
+                                getPointIndicatorFromPosition(pointConnected),
+                                valueOfPointConnected);
+                        listLineTesting.add(line);
+                    }
+                }
+            }
+
+            Object[][] listVariable = new Object[step + 1][soDinh];
+            for (int i = 0; i <= step; i++) {
+                for (int j = 0; j < soDinh; j++) {
+                    listVariable[i][j] = listVariableForTable[i][j];
+                }
+            }
+
+            DataPerStep dps = new DataPerStep(
+                    listLineTesting,
+                    getPointIndicatorFromPosition(startPoint),
+                    getPointIndicatorFromPosition(finishPoint),
+                    listLinePassedOfCurrentStep,
+                    listVariable,
+                    false);
+            if (step == mListDataOfTwoPointForOneStep.size() - 1) {
+                dps.setIsFinalStep(true);
+            }
+            listDPS.add(dps);
+        }
+
+        // vẽ lên đồ thị 
+        long delayTime = Long.parseLong(cmbDelayTime.getSelectedItem().toString());
+        mDrawDoThi.drawDoThiWithActionChayTuDong(listDPS, delayTime);
+    }
+
+    @Override
+    public void tableChanged(TableModelEvent e
+    ) {
         if (e.getType() == TableModelEvent.UPDATE) {
             try {
                 int rowUpdate = tblMaTran.getSelectedRow();
@@ -998,7 +1200,8 @@ public class MainForm extends javax.swing.JFrame
     }
 
     @Override
-    public void updateValueOfLineOnTableMaTran(String value, int pointStartPosition, int pointEndPosition) {
+    public void updateValueOfLineOnTableMaTran(String value, int pointStartPosition, int pointEndPosition
+    ) {
         // Exception : không có đường đi point -> chính point đó 
         if (pointStartPosition == pointEndPosition) {
             JOptionPane.showMessageDialog(this, "Không có đường đi từ điểm -> chính điểm đó");
@@ -1154,4 +1357,81 @@ public class MainForm extends javax.swing.JFrame
         }
     }
 
+    @Override
+    public void callBackUpdateViewPerStepWithActionChayTuDongFromDrawDoThi(DataPerStep dps
+    ) {
+        // show Đường đi  
+        int startPointIndicator = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
+        int finishPointIndicator = Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString());
+        StringBuilder resultPerStep = new StringBuilder();
+
+        // kiểm tra có đường đi ở bước cuối hay không 
+        if (dps.isIsFinalStep() == true) {
+            if (dps.getFinishIndicator() != finishPointIndicator
+                    || dps.getListLinesTesting().size() == 0) {
+                resultPerStep.append("    Không có đường đi từ " + startPointIndicator + " -> " + finishPointIndicator);
+                mTableModelThuatToan = new DefaultTableModel(dps.getTableVariable(), mMaTran.getColumnsName());
+                tblThuatToan.setModel(mTableModelThuatToan);
+                MaTranUtils.updateTableWithSelectedCells(tblThuatToan, new ArrayList<Pair<Integer, Integer>>());
+                lblBieuDienThuatToan.setText(resultPerStep.toString());
+                return;
+            }
+        }
+
+        // lable đường đi của thuật toán 
+        ArrayList<Integer> listPointOfTrueRoad = dps.getListPointOfTrueRoad();
+        int t = 0;
+        resultPerStep.append("    Đường đi từ " + startPointIndicator + "  ->  " + finishPointIndicator + " :      ");
+        for (Integer point : dps.getListPointOfTrueRoad()) {
+            if (t != 0) {
+                resultPerStep.append(point + "   ->   ");
+            }
+            t++;
+        }
+
+        resultPerStep.replace(resultPerStep.length() - 5, resultPerStep.length(), "");
+        int totalLength = 0;
+        int pointBefore = listPointOfTrueRoad.get(0);
+        for (int i = 0; i < listPointOfTrueRoad.size(); i++) {
+            totalLength += (Integer.parseInt(
+                    mMaTran.getListVariable()[getPointPositionFromIndicator(pointBefore)][getPointPositionFromIndicator(listPointOfTrueRoad.get(i))].toString()));
+            pointBefore = listPointOfTrueRoad.get(i);
+        }
+
+        resultPerStep.append("        ---       Tổng độ dài :  " + totalLength);
+        lblBieuDienThuatToan.setText(resultPerStep.toString());
+
+        // table thuật toán
+        ArrayList<Pair<Integer, Integer>> listCellSelectedPointPosition = getListCellSelectedPosition(listPointOfTrueRoad, dps.getListLinePassed());
+
+        mTableModelThuatToan = new DefaultTableModel(dps.getTableVariable(), mMaTran.getColumnsName());
+        tblThuatToan.setModel(mTableModelThuatToan);
+        MaTranUtils.updateTableWithSelectedCells(tblThuatToan, listCellSelectedPointPosition);
+    }
+
+    public ArrayList<Pair<Integer, Integer>> getListCellSelectedPosition(ArrayList<Integer> listPointOfTrueRoad, ArrayList<Line> listLinePassed) {
+        ArrayList<Pair<Integer, Integer>> listCellSelectedPointPosition = new ArrayList<Pair<Integer, Integer>>();
+        int sizeOfTrueRoadPoint = listPointOfTrueRoad.size();
+
+        // step 1 
+        if (sizeOfTrueRoadPoint < 2) {
+            int connectedPoint = listLinePassed.get(0).getEndIndicator();
+            listCellSelectedPointPosition.add(
+                    new Pair(0, getPointPositionFromIndicator(connectedPoint)));
+        } // step > 1
+        else {
+            int step = 1;
+            for (int i = 0; i < listLinePassed.size(); i++) {
+                Line line = listLinePassed.get(i);
+                int connectedPoint = listPointOfTrueRoad.get(step);
+                if (line.getEndIndicator() == connectedPoint) {
+                    listCellSelectedPointPosition.add(
+                            new Pair(i,
+                                    getPointPositionFromIndicator(line.getEndIndicator())));
+                    step++;
+                }
+            }
+        }
+        return listCellSelectedPointPosition;
+    }
 }

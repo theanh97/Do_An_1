@@ -10,12 +10,17 @@ import Draw.ShapeLine;
 import Draw.ShapePoint;
 import Model.Line;
 import Model.MPoint;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import javafx.util.Pair;
 import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -131,6 +136,9 @@ public class MaTranUtils {
 
     public static void updateHeightOfRowInTable(JTable table) {
         int rowCount = table.getRowCount();
+        if (rowCount > 7) {
+            rowCount = 7;
+        }
         for (int row = 0; row < table.getRowCount(); row++) {
             int rowHeight = table.getRowHeight();
 
@@ -141,6 +149,14 @@ public class MaTranUtils {
             }
 
             table.setRowHeight(row, rowHeight);
+        }
+        updateTableWithSelectedCells(table, new ArrayList<Pair<Integer, Integer>>());
+    }
+
+    public static void updateTableWithSelectedCells(JTable table, ArrayList<Pair<Integer, Integer>> cellSelecetedPosition) {
+        CellRenderer cr = new CellRenderer(cellSelecetedPosition);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(cr);
         }
     }
 
@@ -164,7 +180,7 @@ public class MaTranUtils {
             if (indicator == startPoint) {
                 continue;
             }
-            
+
             boolean flagAdded = true;
             for (Integer i : listPointIndicatorConnected) {
                 if (i == indicator) {
@@ -180,4 +196,5 @@ public class MaTranUtils {
 
         return listPoint;
     }
+    
 }

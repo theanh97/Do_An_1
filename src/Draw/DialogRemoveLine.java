@@ -76,7 +76,6 @@ public class DialogRemoveLine extends JDialog {
         btnCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mCallBackToDrawDoThi.callBackRemoveLine(mDeleteLine);
 
                 setVisible(false);
 
@@ -87,7 +86,6 @@ public class DialogRemoveLine extends JDialog {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e); //To change body of generated methods, choose Tools | Templates.
-                mCallBackToDrawDoThi.callBackRemoveLine(mDeleteLine);
                 setVisible(false);
             }
         });

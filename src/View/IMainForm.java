@@ -74,4 +74,6 @@ public interface IMainForm {
             ArrayList<ShapeLine> listShapeLines);
 
     public void updateValueOfLineOnTableMaTran(String newValue, int pointStartPosition, int pointEndPosition);
+    
+    public void handleWithActionChayTuDong();
 }

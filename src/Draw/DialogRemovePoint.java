@@ -41,9 +41,9 @@ public class DialogRemovePoint extends JDialog {
     JButton btnYes;
     JButton btnCancel;
     CallBackToDrawDoThi mCallBackToDrawDoThi;
-    int mPointIndicator ; 
+    int mPointIndicator;
 
-    public DialogRemovePoint(JFrame frame, DrawDoThi ddt , int pointIndicator) {
+    public DialogRemovePoint(JFrame frame, DrawDoThi ddt, int pointIndicator) {
         super(frame, "Xoá 1 điểm", true);
         mCallBackToDrawDoThi = ddt;
         this.mPointIndicator = pointIndicator;
@@ -58,7 +58,7 @@ public class DialogRemovePoint extends JDialog {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e); //To change body of generated methods, choose Tools | Templates.
                 if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-                    mCallBackToDrawDoThi.callBackRemovePoint(mPointIndicator,true);
+                    mCallBackToDrawDoThi.callBackRemovePoint(mPointIndicator, true);
                     setVisible(false);
                 }
             }
@@ -68,7 +68,7 @@ public class DialogRemovePoint extends JDialog {
         btnYes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mCallBackToDrawDoThi.callBackRemovePoint(mPointIndicator,true);
+                mCallBackToDrawDoThi.callBackRemovePoint(mPointIndicator, true);
                 setVisible(false);
             }
         });
@@ -76,8 +76,6 @@ public class DialogRemovePoint extends JDialog {
         btnCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mCallBackToDrawDoThi.callBackRemovePoint(mPointIndicator,false);
-
                 setVisible(false);
 
             }
@@ -87,7 +85,6 @@ public class DialogRemovePoint extends JDialog {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e); //To change body of generated methods, choose Tools | Templates.
-                mCallBackToDrawDoThi.callBackRemovePoint(mPointIndicator,false);
                 setVisible(false);
             }
         });
