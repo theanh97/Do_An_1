@@ -23,57 +23,32 @@ public interface IMainForm {
 
     public void prepareUI();
 
-    public void updateDoThiCoHuong();
-
-    public void updateDoThiVoHuong();
-
-    public void updateDoThiTuVe();
-
-    public void updateDoThiCoSan(Mode mode);
-
-    public void updateDoThiCoSanPosition(Mode mode, int position);
+    public void addPanelDrawDoThi();
 
     public void clearViewOfOldRoad();
 
     public boolean checkValidBeforeExecute();
 
-    public void executeOneTime();
-
-    public void executePerStep(int stepIndicator);
-
     public void showDataWithStepIndicator(int startPoint, int finishPoint, int stepIndicator, int maxStep, int soDinh);
 
-    public void setFlagDiChuyen1Diem();
+    public void handleWithUpdateValueOfLineOnTableMaTran(String value, int pointStartPosition, int pointEndPosition);
 
-    public void setFlagNoi2Diem();
-
-    public void setFlagXoaDiem();
-
-    public void setFlagThemDiem();
-
-    public void setFlagXoaDuongThang();
-
-    public void setFlagThayDoiGiaTri();
-
-    public void updateViewAndDataWithActionDiChuyen1Diem(ArrayList<ShapePoint> listShapePoints,
-            ArrayList<ShapeLine> listShapeLines);
-
-    public void updateViewAndDataWithActionNoi2Diem(ArrayList<ShapePoint> listShapePoints,
-            ArrayList<ShapeLine> listShapeLines);
-
-    public void updateViewAndDataWithActionXoaDiem(ArrayList<ShapePoint> listShapePoints,
-            ArrayList<ShapeLine> listShapeLines);
-
-    public void updateViewAndDataWithActionThemDiem(ArrayList<ShapePoint> listShapePoints,
-            ArrayList<ShapeLine> listShapeLines);
-
-    public void updateViewAndDataWithActionXoaDuongThang(ArrayList<ShapePoint> listShapePoints,
-            ArrayList<ShapeLine> listShapeLines);
-
-    public void updateViewAndDataWithActionThayDoiGiaTri(ArrayList<ShapePoint> listShapePoints,
-            ArrayList<ShapeLine> listShapeLines);
-
-    public void updateValueOfLineOnTableMaTran(String newValue, int pointStartPosition, int pointEndPosition);
-    
     public void handleWithActionChayTuDong();
+
+    public void handleWithSelectedDoThiCoHuong();
+
+    public void handleWithSelectedDoThiVoHuong();
+
+    public void handleWithSelectedDoThiTuVe();
+
+    public void handleWithSelectedDoThiCoSan();
+
+    public void handleWithSelectedDuongDiMoi();
+
+    public void handleWithSelectedDoThiCoSanPosition(int position);
+
+    public void handleWithActionChay1Lan();
+
+    public void handleWithActionChayTungBuoc();
+
 }

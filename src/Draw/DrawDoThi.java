@@ -51,7 +51,6 @@ public class DrawDoThi extends JPanel
     private JPopupMenu mMenuOfLine;
 
     private JFrame mFrame;
-    private DialogAddNewLine mDialog;
     private CallBackToMainForm mCallBackToMainForm;
     private ArrayList<ShapeLine> mListShapeLines;
     private ArrayList<ShapePoint> mListShapePoints;
@@ -76,8 +75,6 @@ public class DrawDoThi extends JPanel
     public DrawDoThi(MainForm mainForm, ArrayList<MPoint> listDatas, boolean CoHuong) {
         mFrame = mainForm;
         mCallBackToMainForm = mainForm;
-        mDialog = new DialogAddNewLine(mainForm, this);
-        mDialog.setVisible(false);
         initShapeData(listDatas, CoHuong);
         initPopupMenu();
         flag = Flag.NONE;
