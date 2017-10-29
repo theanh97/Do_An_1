@@ -5,7 +5,7 @@
  */
 package Algorithm;
 
-import Model.DataOfTwoPointForOneStep;
+import Model.DataPerStepForDijkstra;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +18,8 @@ import javafx.util.Pair;
 public class Dijkstra {
     // start - > chỉ số của startPoint trong mảng 
     // finish -> chỉ số của finishPoint trong mảng  
-    public static ArrayList<DataOfTwoPointForOneStep> dijkstra(int[][] doThi, int soDinh, int start, int finish) {
-        ArrayList<DataOfTwoPointForOneStep> listDataOfTwoPointsForOneStep = new ArrayList<DataOfTwoPointForOneStep>();
+    public static ArrayList<DataPerStepForDijkstra> dijkstra(int[][] doThi, int soDinh, int start, int finish) {
+        ArrayList<DataPerStepForDijkstra> listDataOfTwoPointsForOneStep = new ArrayList<DataPerStepForDijkstra>();
         int[] back = new int[100]; // Lưu đỉnh cha
         int[] weight = new int[100]; // Lưu trọng số 
         int[] mark = new int[100]; // đánh dấu đỉnh 
@@ -118,7 +118,7 @@ public class Dijkstra {
                 }
             }
 
-            // thêm các vị trí các đỉnh đi qua vào listPointMarked của DataOfTwoPointForOneStep
+            // thêm các vị trí các đỉnh đi qua vào listPointMarked của DataPerStepForDijkstra
             for (int i = 0; i < soDinh; i++) {
                 if (mark[i] == 1) {
                     listPointMarked.add(i);
@@ -136,18 +136,11 @@ public class Dijkstra {
             }
 
             // tạo data và add vào list 
-            DataOfTwoPointForOneStep dotpfos = new DataOfTwoPointForOneStep(
+            DataPerStepForDijkstra dotpfos = new DataPerStepForDijkstra(
                     newStartPoint, finishPoint, listValues, beforeValue, currentValue, listPointMarked);
             listDataOfTwoPointsForOneStep.add(dotpfos);
         } while (connect != -1 && start != finish);
         return listDataOfTwoPointsForOneStep;
 
-    }
-
-    public static void printPath(int start, int finish, int back[]) {
-        if (start != finish) {
-            printPath(start, back[finish], back);
-            System.out.print((finish + 1) + " -> ");
-        }
     }
 }

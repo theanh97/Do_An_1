@@ -7,7 +7,7 @@ package Draw;
 
 import Model.Line;
 import Model.MPoint;
-import Utils.MaTranUtils;
+import Utils.FunctionUtils;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -163,7 +163,7 @@ public class DialogConnect2Point extends JDialog {
 
         cmbPointConnected = new JComboBox<Integer>();
         Vector<Integer> comboBoxItems = new Vector<Integer>();
-        ArrayList<Integer> listPointNotConnected = MaTranUtils.getListPointCanConnected(mStartPoint.getIndicator(), mListPoint, mListLine);
+        ArrayList<Integer> listPointNotConnected = FunctionUtils.getListPointCanConnected(mStartPoint.getIndicator(), mListPoint, mListLine);
         for (Integer i : listPointNotConnected) {
             comboBoxItems.add(i);
 //            cmbPointConnected.addItem(i);

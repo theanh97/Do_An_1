@@ -6,7 +6,7 @@
 package Draw;
 
 import Draw.DrawDoThi.Flag;
-import Model.DataPerStep;
+import Model.DataPerStepForRunAutomatically;
 import java.util.ArrayList;
 
 /**
@@ -19,5 +19,5 @@ public interface CallBackToMainForm {
             ArrayList<ShapePoint> listShapePoints,
             ArrayList<ShapeLine> listShapeLines);
     
-    public void callBackUpdateViewPerStepWithActionChayTuDongFromDrawDoThi(DataPerStep dps);
+    public void callBackUpdateViewPerStepWithActionChayTuDongFromDrawDoThi(DataPerStepForRunAutomatically dps);
 }

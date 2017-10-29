@@ -5,11 +5,11 @@
  */
 package Draw;
 
-import Model.DataPerStep;
+import Model.DataPerStepForRunAutomatically;
 import Model.Line;
 import Model.MPoint;
 import Utils.Const;
-import Utils.MaTranUtils;
+import Utils.FunctionUtils;
 import View.MainForm;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -231,7 +231,7 @@ public class DrawDoThi extends JPanel
                         .setVisible(true);
                 break;
             case "Noi2Diem":
-                ArrayList<Integer> listPointCanConnected = MaTranUtils.getListPointCanConnected(
+                ArrayList<Integer> listPointCanConnected = FunctionUtils.getListPointCanConnected(
                         mStartPointConnected.getIndicator(),
                         mListShapePoints,
                         mListShapeLines);
@@ -307,7 +307,7 @@ public class DrawDoThi extends JPanel
         this.isCoHuong = isCoHuong;
         mListShapeLines = new ArrayList<ShapeLine>();
         mListShapePoints = new ArrayList<ShapePoint>();
-        ArrayList<MShape> listShapes = MaTranUtils.convertListDatasToListShape(listDatas, isCoHuong);
+        ArrayList<MShape> listShapes = FunctionUtils.convertListDatasToListShape(listDatas, isCoHuong);
         for (MShape shape : listShapes) {
             if (shape instanceof ShapeLine) {
                 mListShapeLines.add((ShapeLine) shape);
@@ -577,12 +577,12 @@ public class DrawDoThi extends JPanel
         return null;
     }
 
-    public void drawDoThiWithActionChayTuDong(ArrayList<DataPerStep> listDPS, long delayTime) {
+    public void drawDoThiWithActionChayTuDong(ArrayList<DataPerStepForRunAutomatically> listDPS, long delayTime) {
         long increase = delayTime;
         Timer t = new Timer();
 
         for (int step = 0; step < listDPS.size(); step++) {
-            DataPerStep dps = listDPS.get(step);
+            DataPerStepForRunAutomatically dps = listDPS.get(step);
             int startIndicator = dps.getStartIndicator();
             int finishIndicator = dps.getFinishIndicator();
 
@@ -658,7 +658,7 @@ public class DrawDoThi extends JPanel
 
     }
 
-    public void drawWhenTestingLineInOneStep(DataPerStep dps, Line TestingLine) {
+    public void drawWhenTestingLineInOneStep(DataPerStepForRunAutomatically dps, Line TestingLine) {
         // bỏ chọn line && point trước đó đã test  
         for (Line line : dps.getListLinesTesting()) {
             ShapeLine sl = getShapeLineWithIndicator(line.getStartIndicator(), line.getEndIndicator());
@@ -703,7 +703,7 @@ public class DrawDoThi extends JPanel
         repaint();
     }
 
-    public void drawFinalLineInOneStep(DataPerStep dps) {
+    public void drawFinalLineInOneStep(DataPerStepForRunAutomatically dps) {
         // bỏ chọn tất cả line && point 
         for (ShapeLine sl : mListShapeLines) {
             sl.setIsSelected(false);

@@ -65,7 +65,7 @@ public class Const {
     public static Color COLOR_CELL_SELECTED = Color.RED;
     public static Color COLOR_CELL_NORMAL = Color.WHITE;
     public static Color COLOR_CELL_TEXT = Color.BLACK;
-    public static Color COLOR_CELL_TEXT_SELECTED = Color.BLUE;
+    public static Color COLOR_CELL_TEXT_SELECTED = Color.WHITE;
     public static Color COLOR_TESTING = Color.GRAY;
     public static Color COLOR_POINT_NORMAL = Color.BLUE;
     public static Color COLOR_LINE_NORMAL = Color.BLUE;

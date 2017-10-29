@@ -12,7 +12,7 @@ import java.util.Collections;
  *
  * @author DELL
  */
-public class DataPerStep {
+public class DataPerStepForRunAutomatically {
 
     private ArrayList<Line> listLinesTesting;
     private ArrayList<Line> listLinePassed;
@@ -21,7 +21,7 @@ public class DataPerStep {
     private Object[][] tableVariable;
     private boolean isFinalStep;
 
-    public DataPerStep(ArrayList<Line> listLinesTesting, int startIndicator, int finishIndicator,
+    public DataPerStepForRunAutomatically(ArrayList<Line> listLinesTesting, int startIndicator, int finishIndicator,
             ArrayList<Line> listLinePassed, Object[][] tableVariable, boolean isFinalStep) {
         this.listLinesTesting = listLinesTesting;
         this.startIndicator = startIndicator;

@@ -7,8 +7,8 @@ package View;
 
 import Draw.ShapeLine;
 import Draw.ShapePoint;
-import Model.MaTran;
-import Model.MaTran.Mode;
+import Model.Matrix;
+import Model.Matrix.Mode;
 import java.util.ArrayList;
 
 /**

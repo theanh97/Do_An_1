@@ -5,20 +5,20 @@
  */
 package View;
 
-import Model.DataOfTwoPointForOneStep;
+import Model.DataPerStepForDijkstra;
 import Algorithm.Dijkstra;
 import Draw.CallBackToMainForm;
 import Draw.DrawDoThi;
 import Draw.ShapeLine;
 import Draw.ShapePoint;
-import Utils.CellRenderer;
-import Model.DataPerStep;
+import Utils.CellRendererOfTable;
+import Model.DataPerStepForRunAutomatically;
 import Model.Line;
-import Model.MaTran;
-import Model.MaTran.Mode;
+import Model.Matrix;
+import Model.Matrix.Mode;
 import Model.MPoint;
 import Utils.Const;
-import Utils.MaTranUtils;
+import Utils.FunctionUtils;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.CompareGenerator;
 import com.sun.xml.internal.ws.wsdl.parser.InaccessibleWSDLException;
 import java.awt.Graphics;
@@ -71,12 +71,12 @@ public class MainForm extends javax.swing.JFrame
         CallBackToMainForm,
         TableModelListener {
 
-    private MaTran mMaTran;
+    private Matrix mMaTran;
     private DefaultTableModel mTableModelMaTran;
     private DefaultTableModel mTableModelThuatToan;
     private ArrayList<Object[][]> mListDoThiCoSan;
     private ArrayList<Point[]> mListDoThiCoSanCoordinate;
-    private ArrayList<DataOfTwoPointForOneStep> mListDataOfTwoPointForOneStep;
+    private ArrayList<DataPerStepForDijkstra> mListDataOfTwoPointForOneStep;
     private DrawDoThi mDrawDoThi;
     private int stepIndicator = 0;
 
@@ -480,11 +480,11 @@ public class MainForm extends javax.swing.JFrame
         rdbCoHuong.setSelected(true);
         rdbDoThiCoSan.setSelected(true);
 
-        // load MaTran vao table
+        // load Matrix vao table
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
         mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
-        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+        FunctionUtils.updateHeightOfRowInTable(tblMaTran);
 
         // Table Thuat Toan
         mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
@@ -516,8 +516,8 @@ public class MainForm extends javax.swing.JFrame
         mListDoThiCoSanCoordinate.add(Const.DO_THI_1_COORDINATE);
         mListDoThiCoSanCoordinate.add(Const.DO_THI_2_COORDINATE);
 
-        // MaTran 
-        mMaTran = new MaTran(
+        // Matrix 
+        mMaTran = new Matrix(
                 Mode.CoHuong,
                 mListDoThiCoSan.get(0),
                 mListDoThiCoSanCoordinate.get(0));
@@ -639,7 +639,7 @@ public class MainForm extends javax.swing.JFrame
         ArrayList<Line> listLinePassed = new ArrayList<Line>();
 
         for (int step = 0; step < stepIndicator; step++) {
-            DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
+            DataPerStepForDijkstra item = mListDataOfTwoPointForOneStep.get(step);
             int finishPoint = item.getFinishPoint();
             int startPoint = item.getStartPoint();
             ArrayList<Integer> listPointMarked = item.getListPointMarked();
@@ -717,7 +717,7 @@ public class MainForm extends javax.swing.JFrame
                 // table thuật toán
                 mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
                 tblThuatToan.setModel(mTableModelThuatToan);
-                MaTranUtils.updateTableWithSelectedCells(tblThuatToan, new ArrayList<Pair<Integer, Integer>>());
+                FunctionUtils.updateTableWithSelectedCells(tblThuatToan, new ArrayList<Pair<Integer, Integer>>());
                 return;
             }
         }
@@ -730,7 +730,7 @@ public class MainForm extends javax.swing.JFrame
         Pair<Integer, Integer> diemCuoiCurrent = new Pair(-1, -1);
 
         for (int j = stepIndicator - 1; j >= 0; j--) {
-            DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(j);
+            DataPerStepForDijkstra item = mListDataOfTwoPointForOneStep.get(j);
             int start = item.getStartPoint();
             int finish = item.getFinishPoint();
             int curValue = item.getCurrentValue();
@@ -771,7 +771,7 @@ public class MainForm extends javax.swing.JFrame
         ArrayList<Pair<Integer, Integer>> listCellSelectedPointPosition = getListCellSelectedPosition(listPointOfTrueRoad, listLinePassed);
         mTableModelThuatToan = new DefaultTableModel(listDataForTable, mMaTran.getColumnsName());
         tblThuatToan.setModel(mTableModelThuatToan);
-        MaTranUtils.updateTableWithSelectedCells(tblThuatToan, listCellSelectedPointPosition);
+        FunctionUtils.updateTableWithSelectedCells(tblThuatToan, listCellSelectedPointPosition);
 
         // vẽ đường đi lên đồ thị 
         mDrawDoThi.drawRoad(listPointOfTrueRoad);
@@ -797,14 +797,14 @@ public class MainForm extends javax.swing.JFrame
     public void callBackUpdatedFromDrawDoThi(DrawDoThi.Flag flagUpdate, ArrayList<ShapePoint> listShapePoints,
             ArrayList<ShapeLine> listShapeLines
     ) {
-        ArrayList<MPoint> listPoints = MaTranUtils.convertListShapeToListPoint(listShapePoints, listShapeLines);
+        ArrayList<MPoint> listPoints = FunctionUtils.convertListShapeToListPoint(listShapePoints, listShapeLines);
         // cập nhật lại ma trận  
         mMaTran.updateMaTranWithListPoints(listPoints);
         // cập nhật dữ liệu trên table Ma trận 
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
         mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
-        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+        FunctionUtils.updateHeightOfRowInTable(tblMaTran);
 
         // xoá hiển thị kết quả đường đi trước đó
         lblBieuDienThuatToan.setText("Hiển thị đường đi và kết quả thuật toán");
@@ -835,8 +835,7 @@ public class MainForm extends javax.swing.JFrame
 
             int startPosition = getPointPositionFromIndicator(sPoint);
             int finishPosition = getPointPositionFromIndicator(fPoint);
-            mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(
-                    MaTranUtils.convertListObjectToListInt(mMaTran.getListVariable()),
+            mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(FunctionUtils.convertListObjectToListInt(mMaTran.getListVariable()),
                     soDinh,
                     startPosition,
                     finishPosition);
@@ -844,11 +843,11 @@ public class MainForm extends javax.swing.JFrame
             // Tạo Data cho vào table Thuật Toán 
             Object[][] listVariableForTable = new Object[mListDataOfTwoPointForOneStep.size()][soDinh];
 
-            ArrayList<DataPerStep> listDPS = new ArrayList<DataPerStep>();
+            ArrayList<DataPerStepForRunAutomatically> listDPS = new ArrayList<DataPerStepForRunAutomatically>();
             ArrayList<Line> listLinePassed = new ArrayList<Line>();
 
             for (int step = 0; step < mListDataOfTwoPointForOneStep.size(); step++) {
-                DataOfTwoPointForOneStep item = mListDataOfTwoPointForOneStep.get(step);
+                DataPerStepForDijkstra item = mListDataOfTwoPointForOneStep.get(step);
                 int finishPoint = item.getFinishPoint();
                 int startPoint = item.getStartPoint();
                 listLinePassed.add(
@@ -926,7 +925,7 @@ public class MainForm extends javax.swing.JFrame
                     }
                 }
 
-                DataPerStep dps = new DataPerStep(
+                DataPerStepForRunAutomatically dps = new DataPerStepForRunAutomatically(
                         listLineTesting,
                         getPointIndicatorFromPosition(startPoint),
                         getPointIndicatorFromPosition(finishPoint),
@@ -969,7 +968,7 @@ public class MainForm extends javax.swing.JFrame
             mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
             mTableModelMaTran.addTableModelListener(this);
             tblMaTran.setModel(mTableModelMaTran);
-            MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+            FunctionUtils.updateHeightOfRowInTable(tblMaTran);
             return;
         }
 
@@ -981,7 +980,7 @@ public class MainForm extends javax.swing.JFrame
                 mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
                 mTableModelMaTran.addTableModelListener(this);
                 tblMaTran.setModel(mTableModelMaTran);
-                MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+                FunctionUtils.updateHeightOfRowInTable(tblMaTran);
                 return;
             }
         }
@@ -999,7 +998,7 @@ public class MainForm extends javax.swing.JFrame
                 mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
                 mTableModelMaTran.addTableModelListener(this);
                 tblMaTran.setModel(mTableModelMaTran);
-                MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+                FunctionUtils.updateHeightOfRowInTable(tblMaTran);
                 return;
             }
 
@@ -1106,20 +1105,20 @@ public class MainForm extends javax.swing.JFrame
             mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
             mTableModelMaTran.addTableModelListener(this);
             tblMaTran.setModel(mTableModelMaTran);
-            MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+            FunctionUtils.updateHeightOfRowInTable(tblMaTran);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Nhập giá trị không hợp lệ ! mời nhập số nguyên dương");
             mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
             mTableModelMaTran.addTableModelListener(this);
             tblMaTran.setModel(mTableModelMaTran);
-            MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+            FunctionUtils.updateHeightOfRowInTable(tblMaTran);
             return;
         }
     }
     
     @Override
-    public void callBackUpdateViewPerStepWithActionChayTuDongFromDrawDoThi(DataPerStep dps
+    public void callBackUpdateViewPerStepWithActionChayTuDongFromDrawDoThi(DataPerStepForRunAutomatically dps
     ) {
         // show Đường đi  
         int startPointIndicator = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
@@ -1133,7 +1132,7 @@ public class MainForm extends javax.swing.JFrame
                 resultPerStep.append("    Không có đường đi từ " + startPointIndicator + " -> " + finishPointIndicator);
                 mTableModelThuatToan = new DefaultTableModel(dps.getTableVariable(), mMaTran.getColumnsName());
                 tblThuatToan.setModel(mTableModelThuatToan);
-                MaTranUtils.updateTableWithSelectedCells(tblThuatToan, new ArrayList<Pair<Integer, Integer>>());
+                FunctionUtils.updateTableWithSelectedCells(tblThuatToan, new ArrayList<Pair<Integer, Integer>>());
                 lblBieuDienThuatToan.setText(resultPerStep.toString());
                 return;
             }
@@ -1167,7 +1166,7 @@ public class MainForm extends javax.swing.JFrame
 
         mTableModelThuatToan = new DefaultTableModel(dps.getTableVariable(), mMaTran.getColumnsName());
         tblThuatToan.setModel(mTableModelThuatToan);
-        MaTranUtils.updateTableWithSelectedCells(tblThuatToan, listCellSelectedPointPosition);
+        FunctionUtils.updateTableWithSelectedCells(tblThuatToan, listCellSelectedPointPosition);
     }
 
     public ArrayList<Pair<Integer, Integer>> getListCellSelectedPosition(ArrayList<Integer> listPointOfTrueRoad, ArrayList<Line> listLinePassed) {
@@ -1206,7 +1205,7 @@ public class MainForm extends javax.swing.JFrame
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
         mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
-        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+        FunctionUtils.updateHeightOfRowInTable(tblMaTran);
         // xoá hiển thị đường đi trước đó 
         lblBieuDienThuatToan.setText("");
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
@@ -1225,7 +1224,7 @@ public class MainForm extends javax.swing.JFrame
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
         mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
-        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+        FunctionUtils.updateHeightOfRowInTable(tblMaTran);
         // xoá hiển thị đường đi trước đó 
         lblBieuDienThuatToan.setText("");
         mTableModelThuatToan = new DefaultTableModel(null, new Object[]{});
@@ -1242,7 +1241,7 @@ public class MainForm extends javax.swing.JFrame
         cmbDoThiCoSan.setSelectedIndex(0);
         cmbDoThiCoSan.setEnabled(false);
 
-        // clear MaTran 
+        // clear Matrix 
         mMaTran.clearMaTran();
 
         // clear table MaTrans
@@ -1276,8 +1275,8 @@ public class MainForm extends javax.swing.JFrame
 
         mMaTran.clearMaTran();
 
-        // MaTran == null 
-        mMaTran = new MaTran(mMaTran.isMode(), mListDoThiCoSan.get(0), mListDoThiCoSanCoordinate.get(0));
+        // Matrix == null 
+        mMaTran = new Matrix(mMaTran.isMode(), mListDoThiCoSan.get(0), mListDoThiCoSanCoordinate.get(0));
 
         // vẽ lại đồ thị 
         mDrawDoThi.initShapeData(mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
@@ -1287,7 +1286,7 @@ public class MainForm extends javax.swing.JFrame
         mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
         mTableModelMaTran.addTableModelListener(this);
         tblMaTran.setModel(mTableModelMaTran);
-        MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+        FunctionUtils.updateHeightOfRowInTable(tblMaTran);
 
         // Table Thuat Toan
         mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
@@ -1313,8 +1312,8 @@ public class MainForm extends javax.swing.JFrame
     public void handleWithSelectedDoThiCoSanPosition(int position) {
         stepIndicator = 0;
         if (position >= 0) {
-            // MaTran == null 
-            mMaTran = new MaTran(mMaTran.isMode(), mListDoThiCoSan.get(position), mListDoThiCoSanCoordinate.get(position));
+            // Matrix == null 
+            mMaTran = new Matrix(mMaTran.isMode(), mListDoThiCoSan.get(position), mListDoThiCoSanCoordinate.get(position));
 
             // vẽ lại đồ thị 
             mDrawDoThi.initShapeData(mMaTran.getListPoints(), mMaTran.isMode().equals(Mode.CoHuong));
@@ -1324,7 +1323,7 @@ public class MainForm extends javax.swing.JFrame
             mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
             mTableModelMaTran.addTableModelListener(this);
             tblMaTran.setModel(mTableModelMaTran);
-            MaTranUtils.updateHeightOfRowInTable(tblMaTran);
+            FunctionUtils.updateHeightOfRowInTable(tblMaTran);
 
             // Table Thuat Toan
             mTableModelThuatToan = new DefaultTableModel(new Object[][]{}, mMaTran.getColumnsName());
@@ -1352,8 +1351,7 @@ public class MainForm extends javax.swing.JFrame
 
             int startPosition = getPointPositionFromIndicator(sPoint);
             int finishPosition = getPointPositionFromIndicator(fPoint);
-            mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(
-                    MaTranUtils.convertListObjectToListInt(mMaTran.getListVariable()),
+            mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(FunctionUtils.convertListObjectToListInt(mMaTran.getListVariable()),
                     soDinh,
                     startPosition,
                     finishPosition);
@@ -1372,14 +1370,13 @@ public class MainForm extends javax.swing.JFrame
             int soDinh = mMaTran.getListPoints().size();
             int sPoint = Integer.parseInt(cmbDiemXuatPhat.getSelectedItem().toString());
             int fPoint = Integer.parseInt(cmbDiemCuoi.getSelectedItem().toString());
-            // lấy list DataOfTwoPointForOneStep 
+            // lấy list DataPerStepForDijkstra 
 
             int startPosition = getPointPositionFromIndicator(sPoint);
             int finishPosition = getPointPositionFromIndicator(fPoint);
 
             if (stepIndicator == 1) {
-                mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(
-                        MaTranUtils.convertListObjectToListInt(mMaTran.getListVariable()),
+                mListDataOfTwoPointForOneStep = Dijkstra.dijkstra(FunctionUtils.convertListObjectToListInt(mMaTran.getListVariable()),
                         soDinh,
                         startPosition,
                         finishPosition);

@@ -18,13 +18,13 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author DELL
  */
-public class CellRenderer extends JLabel implements TableCellRenderer {
+public class CellRendererOfTable extends JLabel implements TableCellRenderer {
 
     int row1;
     int column1;
     ArrayList<Pair<Integer, Integer>> listSelectedCell;
 
-    public CellRenderer(ArrayList<Pair<Integer, Integer>> listSelectedCell) {
+    public CellRendererOfTable(ArrayList<Pair<Integer, Integer>> listSelectedCell) {
         this.listSelectedCell = listSelectedCell;
         setOpaque(true);
     }

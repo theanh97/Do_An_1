@@ -12,7 +12,7 @@ import java.util.HashMap;
  *
  * @author DELL
  */
-public class DataOfTwoPointForOneStep {
+public class DataPerStepForDijkstra {
 
     
     private int startPoint;
@@ -22,7 +22,7 @@ public class DataOfTwoPointForOneStep {
     private int currentValue; // tổng giá trị lưu hiện tại
     private ArrayList<Integer> listPointMarked; // các điểm đã đánh dấu đi qua 
 
-    public DataOfTwoPointForOneStep(int startPoint, int finishPoint,
+    public DataPerStepForDijkstra(int startPoint, int finishPoint,
             HashMap<Integer, Integer> listValue, int beforeValue,
             int currentValue , ArrayList<Integer> listPointMarked) {
         this.startPoint = startPoint;

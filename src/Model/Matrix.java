@@ -5,7 +5,7 @@
  */
 package Model;
 
-import Utils.MaTranUtils;
+import Utils.FunctionUtils;
 import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author DELL
  */
-public class MaTran {
+public class Matrix {
 
     private Mode mode;
     private ArrayList<MPoint> listPoints;
@@ -22,10 +22,10 @@ public class MaTran {
     private Object[][] listVariableVoHuong;
     private Object[] ColumnsName;
 
-    public MaTran(Mode mode, Object[][] listVariableCoHuong, Point[] coordinate) {
+    public Matrix(Mode mode, Object[][] listVariableCoHuong, Point[] coordinate) {
         this.mode = mode;
         this.listVariableCoHuong = listVariableCoHuong;
-        this.listPoints = MaTranUtils.convertListVariableToListPoint(listVariableCoHuong, coordinate);
+        this.listPoints = FunctionUtils.convertListVariableToListPoint(listVariableCoHuong, coordinate);
         getListVariablesVoHuongFromListVariablesCoHuong();
         createColumnsName();
     }
@@ -155,7 +155,7 @@ public class MaTran {
         this.listPoints.clear();
         this.listPoints.addAll(listPoints);
         // update list variables có hướng  
-        this.listVariableCoHuong = MaTranUtils.convertListPointsToListVariables(listPoints);
+        this.listVariableCoHuong = FunctionUtils.convertListPointsToListVariables(listPoints);
         // update list variables vô hướng 
         getListVariablesVoHuongFromListVariablesCoHuong();
         // update columns name 

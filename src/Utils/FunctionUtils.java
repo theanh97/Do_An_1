@@ -26,7 +26,7 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author DELL
  */
-public class MaTranUtils {
+public class FunctionUtils {
 
     public static ArrayList<MPoint> convertListVariableToListPoint(Object[][] listVariables,
             Point[] coordinate) {
@@ -154,7 +154,7 @@ public class MaTranUtils {
     }
 
     public static void updateTableWithSelectedCells(JTable table, ArrayList<Pair<Integer, Integer>> cellSelecetedPosition) {
-        CellRenderer cr = new CellRenderer(cellSelecetedPosition);
+        CellRendererOfTable cr = new CellRendererOfTable(cellSelecetedPosition);
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(cr);
         }
