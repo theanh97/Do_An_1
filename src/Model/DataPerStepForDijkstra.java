@@ -15,11 +15,11 @@ import java.util.HashMap;
 public class DataPerStepForDijkstra {
 
     
-    private int startPoint;
-    private int finishPoint;
-    private HashMap<Integer, Integer> listValue;
+    private int startPoint; // 3 <=> 5
+    private int finishPoint;  // 6 <=> 9                5->2   : 10    5->3  : 9     
+    private HashMap<Integer, Integer> listValue; // 2,3,1,7
     private int beforeValue; // tổng giá trị lưu trước đó
-    private int currentValue; // tổng giá trị lưu hiện tại
+    private int currentValue; // tổng giá trị lưu hiện tại 
     private ArrayList<Integer> listPointMarked; // các điểm đã đánh dấu đi qua 
 
     public DataPerStepForDijkstra(int startPoint, int finishPoint,

@@ -18,6 +18,9 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -92,10 +95,11 @@ public class DrawDoThi extends JPanel
                     if (point.getShape().contains(clickedPoint)) {
                         // Click chuột phải -> tạo menu 
                         if (SwingUtilities.isRightMouseButton(e)) {
+                            System.err.println("RIght click");
                             isLeftClick = false;
                             mPointPositionSelected = i;
                             mStartPointConnected = mListShapePoints.get(i);
-                            mMenuOfPoint.show(e.getComponent(), clickedPoint.x, clickedPoint.y);
+//                            mMenuOfPoint.show(e.getComponent(), clickedPoint.x, clickedPoint.y);
                             return;
                         } // click chuột trái -> di chuyển 1 điểm 
                         else {
@@ -148,6 +152,41 @@ public class DrawDoThi extends JPanel
                             mListShapeLines);
                     flag = Flag.NONE;
                     mPointPositionSelected = -1;
+                    return;
+                }
+
+                // click chuột phải vào điểm 
+                if (isLeftClick == false) {
+
+                    for (ShapePoint point : mListShapePoints) {
+                        if (point.getShape().contains(releasedPoint)) {
+                            // Nối 2 điểm 
+                            if (releasedPoint.x != mSelectedPointLocation.x
+                                    || releasedPoint.y != mSelectedPointLocation.y) {
+                                boolean isValid = checkConnectedOfTwoPointIsValid(mShapeLineConnectingPoint.getStartIndicator(), point.getIndicator());
+                                if (isValid) {
+                                    new DialogConnect2Point(
+                                            new Point(mSelectedPointLocation.x + mFrame.getLocation().x,
+                                                    mSelectedPointLocation.y + mFrame.getLocation().y),
+                                            mFrame,
+                                            DrawDoThi.this,
+                                            mStartPointConnected,
+                                            point)
+                                            .setVisible(true);
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Không thể tạo line giữa 2 điểm này !!!");
+                                }
+                            }
+                            // mở menu 
+                            else {
+                                mMenuOfPoint.show(e.getComponent(), releasedPoint.x, releasedPoint.y);
+                            }
+                        }
+
+                        repaint();
+                    }
+                    flag = Flag.NONE;
+                    isLeftClick = true;
                 }
             }
         });
@@ -157,6 +196,7 @@ public class DrawDoThi extends JPanel
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e); //To change body of generated methods, choose Tools | Templates.
                 Point draggingPoint = e.getPoint();
+                // di chuyển 1 điểm 
                 if (isLeftClick && flag == Flag.DI_CHUYEN_1_DIEM) {
                     // Di chuyển 1 điểm 
                     ShapePoint sp = mListShapePoints.get(mPointPositionSelected);
@@ -174,6 +214,20 @@ public class DrawDoThi extends JPanel
                     }
                     repaint();
                 }
+
+                // Nối 2 điểm 
+                if (isLeftClick == false) {
+                    flag = Flag.NOI_2_DIEM;
+                    mShapeLineConnectingPoint = new ShapeLine(
+                            mStartPointConnected.getOriginPoint(),
+                            draggingPoint,
+                            1,
+                            isCoHuong,
+                            false,
+                            mStartPointConnected.getIndicator(),
+                            10);
+                    repaint();
+                }
             }
         });
     }
@@ -186,16 +240,11 @@ public class DrawDoThi extends JPanel
         menuSuaDiem.setActionCommand("SuaDiem");
         menuSuaDiem.addActionListener(this);
 
-        JMenuItem menuNoi2Diem = new JMenuItem("Nối 2 điểm");
-        menuNoi2Diem.setActionCommand("Noi2Diem");
-        menuNoi2Diem.addActionListener(this);
-
         JMenuItem menuXoaDiem = new JMenuItem("Xoá Điểm");
         menuXoaDiem.setActionCommand("XoaDiem");
         menuXoaDiem.addActionListener(this);
 
         mMenuOfPoint.add(menuSuaDiem);
-        mMenuOfPoint.add(menuNoi2Diem);
         mMenuOfPoint.add(menuXoaDiem);
 
         // menu of Point 
@@ -229,25 +278,6 @@ public class DrawDoThi extends JPanel
                         DrawDoThi.this,
                         mListShapePoints.get(mPointPositionSelected).getIndicator())
                         .setVisible(true);
-                break;
-            case "Noi2Diem":
-                ArrayList<Integer> listPointCanConnected = FunctionUtils.getListPointCanConnected(
-                        mStartPointConnected.getIndicator(),
-                        mListShapePoints,
-                        mListShapeLines);
-                if (listPointCanConnected.size() > 0) {
-                    new DialogConnect2Point(
-                            new Point(mSelectedPointLocation.x + mFrame.getLocation().x,
-                                    mSelectedPointLocation.y + mFrame.getLocation().y),
-                            mFrame,
-                            DrawDoThi.this,
-                            mListShapePoints,
-                            mListShapeLines,
-                            mStartPointConnected)
-                            .setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Không có điểm nào để kết nối");
-                }
                 break;
             case "SuaDuongThang":
                 new DialogChangeValue(
@@ -287,10 +317,12 @@ public class DrawDoThi extends JPanel
         }
 
         // draw line connecting 
-        if (mFlagOfConnectingPoint
-                && flag == Flag.NOI_2_DIEM) {
+//        if (mFlagOfConnectingPoint
+//                && flag == Flag.NOI_2_DIEM) {
+        if (flag == Flag.NOI_2_DIEM) {
             mShapeLineConnectingPoint.paint(g2d);
         }
+//        }
 
         // draw point 
         for (ShapePoint shape : mListShapePoints) {
@@ -641,8 +673,7 @@ public class DrawDoThi extends JPanel
                         drawDoThiUnselected();
                     }
                 }, delayTime);
-            } 
-            // có đường đi
+            } // có đường đi
             else {
                 // hiển thị Line cuối cùng ( được chọn ) 
                 t.schedule(new TimerTask() {

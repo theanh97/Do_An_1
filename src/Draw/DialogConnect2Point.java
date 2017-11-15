@@ -52,25 +52,21 @@ public class DialogConnect2Point extends JDialog {
     CallBackToDrawDoThi mCallBackToDrawDoThi;
     Container cp;
     Point mSelectedPointPosition; // vị trí tạo dialog
-    JComboBox<Integer> cmbPointConnected;
     JFormattedTextField txtValue;
     JButton btnYes;
     JButton btnCancel;
-    ArrayList<ShapePoint> mListPoint;
-    ArrayList<ShapeLine> mListLine;
     ShapePoint mStartPoint;
     ShapePoint mFinishPoint;
 
     public DialogConnect2Point(Point selectedPointPosition, JFrame frame, DrawDoThi ddt,
-            ArrayList<ShapePoint> listPoints, ArrayList<ShapeLine> listLines, ShapePoint startPoint) {
-        super(frame, "Nối 2 điểm", true);
+            ShapePoint startPoint , ShapePoint finishPoint ) {
+        super(frame, "Nối từ "+ startPoint.getIndicator() + " -> " + finishPoint.getIndicator(), true);
         this.mSelectedPointPosition = selectedPointPosition;
         this.mFrame = frame;
         mCallBackToDrawDoThi = ddt;
 
-        this.mListPoint = listPoints;
-        this.mListLine = listLines;
         this.mStartPoint = startPoint;
+        this.mFinishPoint = finishPoint;
         initAndAddView();
         configForDialog();
         setEvent();
@@ -108,12 +104,6 @@ public class DialogConnect2Point extends JDialog {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e); //To change body of generated methods, choose Tools | Templates.
                 if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-                    int finishIndicator = (int) cmbPointConnected.getSelectedItem();
-                    for (ShapePoint point : mListPoint) {
-                        if (point.getIndicator() == finishIndicator) {
-                            mFinishPoint = point;
-                        }
-                    }
                     Integer value = Integer.parseInt(txtValue.getValue().toString());
                     mCallBackToDrawDoThi.callBackAddNewLine(value, mStartPoint, mFinishPoint);
                     setVisible(false);
@@ -125,12 +115,6 @@ public class DialogConnect2Point extends JDialog {
         btnYes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int finishIndicator = (int) cmbPointConnected.getSelectedItem();
-                for (ShapePoint point : mListPoint) {
-                    if (point.getIndicator() == finishIndicator) {
-                        mFinishPoint = point;
-                    }
-                }
                 Integer value = Integer.parseInt(txtValue.getValue().toString());
                 mCallBackToDrawDoThi.callBackAddNewLine(value, mStartPoint, mFinishPoint);
                 setVisible(false);
@@ -158,21 +142,6 @@ public class DialogConnect2Point extends JDialog {
         cp = getContentPane();
         cp.setLayout(new FlowLayout());
 
-        JLabel lblNoiTu = new JLabel("   Nối từ : " + mStartPoint.getIndicator() + "   Đến : ");
-        cp.add(lblNoiTu);
-
-        cmbPointConnected = new JComboBox<Integer>();
-        Vector<Integer> comboBoxItems = new Vector<Integer>();
-        ArrayList<Integer> listPointNotConnected = FunctionUtils.getListPointCanConnected(mStartPoint.getIndicator(), mListPoint, mListLine);
-        for (Integer i : listPointNotConnected) {
-            comboBoxItems.add(i);
-//            cmbPointConnected.addItem(i);
-        }
-        DefaultComboBoxModel model = new DefaultComboBoxModel(comboBoxItems);
-        cmbPointConnected.setModel(model);
-
-        cp.add(cmbPointConnected);
-
         cp.add(new JLabel("\n    Giá trị : "));
 
         formatTextFieldValue();
@@ -186,7 +155,7 @@ public class DialogConnect2Point extends JDialog {
     }
 
     void configForDialog() {
-        setSize(220, 170);
+        setSize(220, 130);
         setLocation(mSelectedPointPosition.x + 170,
                 mSelectedPointPosition.y + 85);
         getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);

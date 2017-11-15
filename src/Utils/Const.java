@@ -59,7 +59,9 @@ public class Const {
     public static long[] DELAY_TIME = {500, 1000, 1500, 2000, 2500, 3000};
 
     // DIMENSION 
-    public static int HEIGHT_OF_TABLE_MATRAN = 265;
+    public static int MAX_HEIGHT_OF_TABLE_MATRAN = 325;
+    public static int MIN_HEIGHT_OF_TABLE_MATRAN = 263;
+    public static int HEIGHT_OF_TABLE_MATRAN = MAX_HEIGHT_OF_TABLE_MATRAN;
 
     // Draw 
     public static Color COLOR_CELL_SELECTED = Color.RED;
