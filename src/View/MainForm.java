@@ -464,17 +464,17 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void prepareUI() {
-        this.addComponentListener(new ComponentAdapter(){
+        this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e); //To change body of generated methods, choose Tools | Templates.
                 mDrawDoThi.setBounds(0, 0, panelContainDrawDoThi.getWidth(), panelContainDrawDoThi.getHeight());
-                if(isShowFullScreen){
+                if (isShowFullScreen) {
                     Const.HEIGHT_OF_TABLE_MATRAN = Const.MIN_HEIGHT_OF_TABLE_MATRAN;
-                     isShowFullScreen = false ;
-                }else {
+                    isShowFullScreen = false;
+                } else {
                     Const.HEIGHT_OF_TABLE_MATRAN = Const.MAX_HEIGHT_OF_TABLE_MATRAN;
-                    isShowFullScreen = true ;
+                    isShowFullScreen = true;
                 }
                 FunctionUtils.updateHeightOfRowInTable(tblMaTran);
             }
@@ -802,7 +802,6 @@ public class MainForm extends javax.swing.JFrame
     }
 
     int getPointIndicatorFromPosition(int pointPosition) {
-        System.out.println("Point position : " + pointPosition);
         return mMaTran.getListPoints().get(pointPosition).getIndicator();
     }
 
@@ -822,6 +821,31 @@ public class MainForm extends javax.swing.JFrame
             ArrayList<ShapeLine> listShapeLines
     ) {
         ArrayList<MPoint> listPoints = FunctionUtils.convertListShapeToListPoint(listShapePoints, listShapeLines);
+        /**
+         * sort lại các point
+         */
+        listPoints.sort(new Comparator<MPoint>() {
+            @Override
+            public int compare(MPoint o1, MPoint o2) {
+                return o1.getIndicator() - o2.getIndicator();
+            }
+        });
+
+        /**
+         * sort lại các line của point đó
+         */
+        for (MPoint point : listPoints) {
+            ArrayList<Line> listLines = point.getListLine();
+            for (int j = 0; j < listLines.size(); j++) {
+                listLines.sort(new Comparator<Line>() {
+                    @Override
+                    public int compare(Line o1, Line o2) {
+                        return o1.getEndIndicator() - o2.getEndIndicator();
+                    }
+                });
+            }
+        }
+
         // cập nhật lại ma trận  
         mMaTran.updateMaTranWithListPoints(listPoints);
         // cập nhật dữ liệu trên table Ma trận 
@@ -986,7 +1010,7 @@ public class MainForm extends javax.swing.JFrame
 
     @Override
     public void handleWithUpdateValueOfLineOnTableMaTran(String value, int pointStartPosition, int pointEndPosition) {
-         // Exception : không có đường đi point -> chính point đó 
+        // Exception : không có đường đi point -> chính point đó 
         if (pointStartPosition == pointEndPosition) {
             JOptionPane.showMessageDialog(this, "Không có đường đi từ điểm -> chính điểm đó");
             mTableModelMaTran = new DefaultTableModel(mMaTran.getListVariable(), mMaTran.getColumnsName());
@@ -1140,7 +1164,7 @@ public class MainForm extends javax.swing.JFrame
             return;
         }
     }
-    
+
     @Override
     public void callBackUpdateViewPerStepWithActionChayTuDongFromDrawDoThi(DataPerStepForRunAutomatically dps
     ) {
@@ -1197,28 +1221,35 @@ public class MainForm extends javax.swing.JFrame
         ArrayList<Pair<Integer, Integer>> listCellSelectedPointPosition = new ArrayList<Pair<Integer, Integer>>();
         int sizeOfTrueRoadPoint = listPointOfTrueRoad.size();
 
-        // step 1 
-        if (sizeOfTrueRoadPoint < 2) {
-            int connectedPoint = listLinePassed.get(0).getEndIndicator();
-            listCellSelectedPointPosition.add(
-                    new Pair(0, getPointPositionFromIndicator(connectedPoint)));
-        } // step > 1
-        else {
-            int step = 1;
-            for (int i = 0; i < listLinePassed.size(); i++) {
-                Line line = listLinePassed.get(i);
-                int connectedPoint = listPointOfTrueRoad.get(step);
-                if (line.getEndIndicator() == connectedPoint) {
-                    listCellSelectedPointPosition.add(
-                            new Pair(i,
-                                    getPointPositionFromIndicator(line.getEndIndicator())));
-                    step++;
-                }
-            }
-            for(int i =0 ; i < listLinePassed.size() ;i++){
-                Line line = listLinePassed.get(i);
-                listCellSelectedPointPosition.add(new Pair(i,getPointIndicatorFromPosition(line.getEndIndicator())));
-            }
+        for (Integer i : listPointOfTrueRoad) {
+            System.err.println("True Road : " + i);
+        }
+        for (Line line : listLinePassed) {
+            System.out.println("Start : " + line.getStartIndicator() + " - End : " + line.getEndIndicator() + " : " + line.getValue());
+        }
+
+//        // step 1 
+//        if (sizeOfTrueRoadPoint < 2) {
+//            int connectedPoint = listLinePassed.get(0).getEndIndicator();
+//            listCellSelectedPointPosition.add(
+//                    new Pair(0, getPointPositionFromIndicator(connectedPoint)));
+//        } // step > 1
+//        else {
+//            int step = 1;
+//            for (int i = 0; i < listLinePassed.size(); i++) {
+//                Line line = listLinePassed.get(i);
+//                int connectedPoint = listPointOfTrueRoad.get(step);
+//                if (line.getEndIndicator() == connectedPoint) {
+//                    listCellSelectedPointPosition.add(
+//                            new Pair(i,
+//                                    getPointPositionFromIndicator(line.getEndIndicator())));
+//                    step++;
+//                }
+//            }
+//        }
+        for (int i = 0; i < listLinePassed.size(); i++) {
+            Line line = listLinePassed.get(i);
+            listCellSelectedPointPosition.add(new Pair(i, getPointPositionFromIndicator(line.getEndIndicator())));
         }
         return listCellSelectedPointPosition;
     }

@@ -152,10 +152,12 @@ public class Matrix {
 
     public void updateMaTranWithListPoints(ArrayList<MPoint> listPoints) {
         // update list points 
+//        clearMaTran();
         this.listPoints.clear();
         this.listPoints.addAll(listPoints);
         // update list variables có hướng  
-        this.listVariableCoHuong = FunctionUtils.convertListPointsToListVariables(listPoints);
+        this.listVariableCoHuong = FunctionUtils.convertListPointsToListVariables(listPoints);      
+
         // update list variables vô hướng 
         getListVariablesVoHuongFromListVariablesCoHuong();
         // update columns name 
